@@ -3,14 +3,19 @@ session_start();
 require_once('header.php');
 require_once('dbconnect.php');
 
+$error = array();
+
 /*
 アカウント登録
 エラーチェックを行い問題なければデータベースに登録する
 */
 if(!empty($_POST)){
+    $name = isset($_POST['name']) ? $_POST['name'] : '';
+    $password = isset($_POST['password']) ? $_POST['password'] : '';
+
     //空欄判定
-    if($_POST['name'] ==='') $error['name'] = 'blank';
-    if($_POST['password']==='')$error['password'] = 'blank';
+    if($name === '') $error['name'] = 'blank';
+    if($password === '') $error['password'] = 'blank';
 
     //長さ判定
     if(empty($error['name']) &&  strlen($_POST['name']) > 16)$error['name'] = 'over';
@@ -37,12 +42,13 @@ if(!empty($_POST)){
 
 <h1>アカウント作成</h1>
 <?php //エラーメッセージの表示
-if($error['name']==='blank')echo'<div class="alart">※ニックネームが空です。</div>';
-if($error['name']==='over')echo'<div class="alart">※ニックネームが長すぎます。</div>';
-if($error['name']==='already')echo'<div class="alart">※登録済みのアカウント名です。</div>';
-if($error['password']==='blank')echo'<div class="alart">※パスワードが空です。</div>';
-if($error['password']==='shortage')echo '<div class="alart">※パスワードが短すぎます。</div>';
-if($error['password']==='over')echo '<div class="alart">※パスワードが長すぎます。</div>';
+if(isset($error['name']) && $error['name'] === 'blank') echo '<div class="alart">※ニックネームが空です。</div>';
+if(isset($error['name']) && $error['name'] === 'over') echo '<div class="alart">※ニックネームが長すぎます。</div>';
+if(isset($error['name']) && $error['name'] === 'already') echo '<div class="alart">※登録済みのアカウント名です。</div>';
+if(isset($error['password']) && $error['password'] === 'blank') echo '<div class="alart">※パスワードが空です。</div>';
+if(isset($error['password']) && $error['password'] === 'shortage') echo '<div class="alart">※パスワードが短すぎます。</div>';
+if(isset($error['password']) && $error['password'] === 'over') echo '<div class="alart">※パスワードが長すぎます。</div>';
+
 ?>
 <form action="" method="post"><table>
 <tr><td>ニックネーム(1~16文字)</td><td><input type="textbox" name="name"></td></tr>

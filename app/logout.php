@@ -1,8 +1,9 @@
 <?php
 session_start();
+require_once('logincheck.php');
 require_once('header.php');
 require_once('dbconnect.php');
-require_once('logincheck.php');
+
 
 setcookie('Cookie', "", time()-3600);
 $_SESSION = array();

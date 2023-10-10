@@ -1,24 +1,28 @@
 <?php
 session_start();
-require_once('header.php');
+//require_once('header.php');
 require_once('dbconnect.php');
+
+$error = array();
 
 /*
 ログインチェック
 既にログイン済みの場合はindex.phpに飛ばす
 セッションidとcookieが同一ならログイン済みと判定
  */
-if(!empty($_SESSION) && $_SESSION['session_id'] === $_COOKIE['Cookie']){
+
+if (isset($_COOKIE['Cookie']) && !empty($_SESSION) && $_SESSION['session_id'] === $_COOKIE['Cookie']) {
     header('Location: index.php');
     exit();
 }
+
 
 /*
 ログイン処理
 リクエストパラメータと同じname, passwordのアカウントがDBMSに登録されていればログイン成功
  */
 if(!empty($_POST)){
-    if($_POST['name'] !== '' && $_POST['password'] !== ''){
+    if(isset($_POST['name']) && isset($_POST['password']) && $_POST['name'] !== '' && $_POST['password'] !== ''){
         $login = $db->prepare('SELECT * FROM members WHERE name=? AND password=?');
         $login->execute(array(
           $_POST['name'],
@@ -30,14 +34,16 @@ if(!empty($_POST)){
             $_SESSION['id'] = $member['id'];
             $_SESSION['name'] = $member['name'];
             $_SESSION['session_id'] = session_id();
-
+        
+            //cookieにセッションidをセットする
+            setcookie('Cookie', $_SESSION['session_id'], time()+60*60*24*7);
+        
             //ゲストアカウントでログインした場合は特殊処理を行う
+            // **この位置に移動**
             if($_SESSION['name']==='ゲスト'){
                 require_once('guestlogin.php');
             }
-            //cookieにセッションidをセットする
-            setcookie('Cookie', $_SESSION['session_id'], time()+60*60*24*7);
-
+        
             header('Location: index.php');
             exit();
         }else{
@@ -49,15 +55,21 @@ if(!empty($_POST)){
         $error['login'] = 'blank';
     }
 }
-if($error['login']==='blank'){
+if (isset($error['login']) && $error['login'] === 'blank') {
     $alart = '※ニックネームまたはパスワードが空です。';
-}else if($error['login']==='failed'){
+} elseif (isset($error['login']) && $error['login'] === 'failed') {
     $alart = '※ログインに失敗しました。ニックネームかパスワードが間違っています。';
 }
+
+require_once('header.php');
+if (isset($db_error)) {
+    echo '<p class="error">' . $db_error . '</p>';
+}
+
 ?>
 
-<h1>自動コーディネータ　ver.0.9</h1>
-<p>その名の通り、自動で服を選んでくれるアプリケーションです。<br>
+<h1>自動コーディネータ</h1>
+<p>自動で服を選んでくれるアプリケーションです。<br>
 (このページはPHPの学習を目的として製作されたものです)<br>
 <a href="explanation.php">このアプリについて</a></p><br>
 

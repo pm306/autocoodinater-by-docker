@@ -10,7 +10,7 @@ function select_clothes(&$db, &$array, ...$types){
     if(!empty($_SESSION['name'])){
         $name = $_SESSION['name'];
     }else{
-        $name = "gest";
+        $name = "guest";
     }
 
     //sql文の作成
@@ -22,7 +22,7 @@ function select_clothes(&$db, &$array, ...$types){
         else $sql .=')';     
     }
     $sql .= 'ORDER BY RAND() LIMIT 1';
-    //echo $sql.'<br>'; //※デバッグ用
+    // echo $sql.'<br>'; //※デバッグ用
     $result = $db->prepare($sql);
     $result->execute(array($name));
     $is_get = false;

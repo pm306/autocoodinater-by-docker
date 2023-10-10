@@ -1,8 +1,9 @@
 <?php
 session_start();
+require_once('logincheck.php');
 require_once('header.php');
 require_once('dbconnect.php');
-require_once('logincheck.php');
+
 
 $id = $_POST['id'];
 $sql = $db->prepare('SELECT id, picture FROM clothes WHERE id=?');
