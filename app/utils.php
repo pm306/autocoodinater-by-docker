@@ -1,6 +1,7 @@
 <?php
 
 const COOKIE_EXPIRY_TIME = 60 * 60 * 24 * 7;  // Cookie expiration time set to 1 week in seconds
+const TIME_FOR_DELETE_COOKIE = 3600;
 const MAX_TEMPERATURE_LIMIT = 50;
 const MIN_TEMPERATURE_LIMIT = -50;
 
@@ -17,7 +18,7 @@ const ERROR_TEMPERATURE_BLANK = 'blank';
 const ERROR_TEMPERATURE_MAXOVER = 'maxover';
 const ERROR_TEMPERATURE_MINOVER = 'minover';
 const ERROR_TEMPERATURE_IMPOSSIBLE = 'impossible';
-const UPLOAD_DIR = 'upload/'
+const UPLOAD_DIR = 'upload/';
 
 const SELECT_CLOTHES_BY_OWNER_AND_TYPE = 'SELECT id, picture FROM clothes WHERE owner=? and type=?';
 const SELECT_CLOTHES_BY_ID = 'SELECT id, type, picture FROM clothes WHERE id=?';

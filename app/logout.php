@@ -3,9 +3,10 @@ session_start();
 require_once('logincheck.php');
 require_once('header.php');
 require_once('dbconnect.php');
+require_once("utils.php");
 
 
-setcookie('Cookie', "", time()-3600);
+setcookie(COOKIE_NAME, "", time()-TIME_FOR_DELETE_COOKIE);
 $_SESSION = array();
 
 session_destroy();
