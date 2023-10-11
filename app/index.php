@@ -4,24 +4,21 @@ require_once('logincheck.php');
 require_once('header.php');
 require_once('dbconnect.php');
 require_once('clothes_type.php');
-
+require_once('utils.php');  // utils.php を読み込む
 
 //ゼロを空判定しない関数
-function is_empty( $var = null ) {
-	if (empty( $var ) && 0 !== $var && '0' !== $var ) { 
-		return true;
-	} else {
-		return false;
-	}
+function is_empty($var = null) {
+    if (empty($var) && 0 !== $var && '0' !== $var) {
+        return true;
+    } else {
+        return false;
+    }
 }
-/*
-決定ボタンを押した際の処理
-着ると決めた服の「最後に着た日付」を更新する
-*/
-if(!empty($_POST['wear'])){
+
+if (!empty($_POST[POST_KEY_WEAR])) {
     $deside = true;
-    foreach($_POST['wear'] as $id){
-        $date = date('Y-m-d');
+    foreach ($_POST[POST_KEY_WEAR] as $id) {
+        $date = date(DATE_FORMAT);
         $sql = $db->prepare('UPDATE clothes SET used_date=? WHERE id=?');
         $sql->bindparam(1, $date, PDO::PARAM_STR);
         $sql->bindparam(2, $id, PDO::PARAM_INT);
@@ -34,29 +31,23 @@ $selected_bottoms = array();
 $max_temperature = $min_temperature = 0;
 $name = $_SESSION['name'];
 
-/*
-最高気温：最低気温を受け取って、エラーチェック
-エラーがなければselect_clothesを呼び出す
-*/
-if(!is_empty($_POST['max_temperature']) && !is_empty($_POST['min_temperature'])){
+if (!is_empty($_POST['max_temperature']) && !is_empty($_POST['min_temperature'])) {
     $max_temperature = $_POST['max_temperature'];
     $min_temperature = $_POST['min_temperature'];
-    //ありえない数値設定がなされた場合はエラーメッセージを表示する
-    if($max_temperature > 50){
-        $error['temperature'] = "maxover";
+    if ($max_temperature > MAX_TEMPERATURE_LIMIT) {
+        $error['temperature'] = ERROR_TEMPERATURE_MAXOVER;
+    } elseif ($min_temperature < MIN_TEMPERATURE_LIMIT) {
+        $error['temperature'] = ERROR_TEMPERATURE_MINOVER;
+    } elseif ($max_temperature < $min_temperature) {
+        $error['temperature'] = ERROR_TEMPERATURE_IMPOSSIBLE;
     }
-    else if($min_temperature < -50){
-        $error['temperature'] = "minover";
-    }
-    else if($max_temperature < $min_temperature){
-        $error['temperature'] = "impossible";
-    }
-    if(empty($error)){
+    if (empty($error)) {
         require_once('select_clothes.php');
     }
-}else if(!empty($_POST) && empty($_POST['wear'])){
-    $error["temperature"] = "blank";
+} elseif (!empty($_POST) && empty($_POST[POST_KEY_WEAR])) {
+    $error["temperature"] = ERROR_TEMPERATURE_BLANK;
 }
+
 ?>
 
 <h1>オートコーディネータ</h1><!---ユーザー名はエスケープ処理してから表示する--->
