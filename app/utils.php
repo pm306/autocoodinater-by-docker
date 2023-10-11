@@ -17,7 +17,10 @@ const RETURN_TRUE_VALUE = 'true';
 const COOKIE_NAME = 'Cookie';           // Name of the cookie used for session identification
 const GUEST_NAME = 'ゲスト';            // Default name for guest users
 const DATE_FORMAT = 'Y-m-d';
+const IMAGE_NAME_FORMAT = "YmdHis";
 const UPLOAD_DIR = 'upload/';
+const CLOTH_TYPE_TOPS = 'tops';
+const CLOTH_TYPE_BOTTOMS = 'bottoms';
 const ERROR_TEMPERATURE_BLANK = 'blank';
 const ERROR_TEMPERATURE_MAXOVER = 'maxover';
 const ERROR_TEMPERATURE_MINOVER = 'minover';
@@ -26,6 +29,8 @@ const ERROR_NAME_OVER_LENGTH = 'over';
 const ERROR_PASSWORD_SHORT = 'shortage';
 const ERROR_PASSWORD_OVER_LENGTH = 'over';
 const ERROR_NAME_ALREADY_EXISTS = 'already';
+const UPLOAD_SUCCESS_MESSAGE = '追加しました';
+const UPLOAD_FAILURE_MESSAGE = 'アップロードに失敗しました';
 
 const SELECT_CLOTHES_BY_OWNER_AND_TYPE = 'SELECT id, picture FROM clothes WHERE owner=? and type=?';
 const SELECT_CLOTHES_BY_ID = 'SELECT id, type, picture FROM clothes WHERE id=?';
@@ -37,3 +42,4 @@ const DELETE_CLOTHES_BY_OWNER = 'DELETE FROM clothes WHERE owner=?';
 const DELETE_MEMBER_BY_NAME_PASSWORD = 'DELETE FROM members WHERE name=? and password=?';
 const SELECT_MEMBER_COUNT_BY_NAME = 'SELECT COUNT(*) AS cnt FROM members WHERE name=?';
 const INSERT_NEW_MEMBER = 'INSERT INTO members SET name=?, password=?';
+const INSERT_NEW_CLOTH = 'INSERT INTO clothes SET owner=?, type=?,picture=?';
