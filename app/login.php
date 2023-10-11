@@ -1,7 +1,8 @@
 <?php
 session_start();
-//require_once('header.php');
+require_once('header.php');
 require_once('dbconnect.php');
+require_once("utils.php");
 
 $error = array();
 
@@ -11,7 +12,7 @@ $error = array();
 セッションidとcookieが同一ならログイン済みと判定
  */
 
-if (isset($_COOKIE['Cookie']) && !empty($_SESSION) && $_SESSION['session_id'] === $_COOKIE['Cookie']) {
+if (isset($_COOKIE[COOKIE_NAME]) && !empty($_SESSION) && $_SESSION['session_id'] === $_COOKIE[COOKIE_NAME]) {
     header('Location: index.php');
     exit();
 }
@@ -36,11 +37,11 @@ if(!empty($_POST)){
             $_SESSION['session_id'] = session_id();
         
             //cookieにセッションidをセットする
-            setcookie('Cookie', $_SESSION['session_id'], time()+60*60*24*7);
+            setcookie(COOKIE_NAME, $_SESSION['session_id'], time()+COOKIE_EXPIRY_TIME);
         
             //ゲストアカウントでログインした場合は特殊処理を行う
             // **この位置に移動**
-            if($_SESSION['name']==='ゲスト'){
+            if($_SESSION['name']===GUEST_NAME){
                 require_once('guestlogin.php');
             }
         
@@ -61,7 +62,7 @@ if (isset($error['login']) && $error['login'] === 'blank') {
     $alart = '※ログインに失敗しました。ニックネームかパスワードが間違っています。';
 }
 
-require_once('header.php');
+
 if (isset($db_error)) {
     echo '<p class="error">' . $db_error . '</p>';
 }
