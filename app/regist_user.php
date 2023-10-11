@@ -1,38 +1,34 @@
-<?php
+<?php 
 session_start();
 require_once('header.php');
 require_once('dbconnect.php');
+require_once('utils.php');  // 追加
 
 $error = array();
 
-/*
-アカウント登録
-エラーチェックを行い問題なければデータベースに登録する
-*/
 if(!empty($_POST)){
     $name = isset($_POST['name']) ? $_POST['name'] : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
 
     //空欄判定
-    if($name === '') $error['name'] = 'blank';
-    if($password === '') $error['password'] = 'blank';
+    if($name === '') $error['name'] = ERROR_TEMPERATURE_BLANK;
+    if($password === '') $error['password'] = ERROR_TEMPERATURE_BLANK;
 
     //長さ判定
-    if(empty($error['name']) &&  strlen($_POST['name']) > 16)$error['name'] = 'over';
-    if(empty($error['password']) && strlen($_POST['password']) < 4)$error['password'] = 'shortage';
-    if(empty($error['password']) && strlen($_POST['password']) > 16)$error['password'] = 'over';
+    if(empty($error['name']) && strlen($name) > NAME_MAX_LENGTH) $error['name'] = ERROR_NAME_OVER_LENGTH;
+    if(empty($error['password']) && strlen($password) < PASSWORD_MIN_LENGTH) $error['password'] = ERROR_PASSWORD_SHORT;
+    if(empty($error['password']) && strlen($password) > PASSWORD_MAX_LENGTH) $error['password'] = ERROR_PASSWORD_OVER_LENGTH;
 
     //登録済み判定
-    $sql = $db->prepare('SELECT COUNT(*) AS cnt FROM members WHERE name=?');
-    $sql->execute(array($_POST['name']));
+    $sql = $db->prepare(SELECT_MEMBER_COUNT_BY_NAME);
+    $sql->execute(array($name));
     $res = $sql->fetch();
-    if($res['cnt']>0){
-        $error['name'] = 'already';       
-    }
+    if($res['cnt'] > 0) $error['name'] = ERROR_NAME_ALREADY_EXISTS;
+
     //エラーがなければデータベースに登録する
     if(empty($error)){
-        $statement = $db->prepare('INSERT INTO members SET name=?, password=?');
-        $statement->execute(array($_POST['name'],sha1($_POST['password'])));
+        $statement = $db->prepare(INSERT_NEW_MEMBER);
+        $statement->execute(array($name, sha1($password)));
 
         header('Location: regist_user_success.php');
         exit();
