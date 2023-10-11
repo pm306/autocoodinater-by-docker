@@ -3,7 +3,7 @@ session_start();
 require_once('header.php');
 require_once('dbconnect.php');
 require_once("utils.php");
-require_once('login_helper.php')
+require_once('login_helper.php');
 
 // すでにログインしていればトップページにリダイレクト
 redirectIfLoggedIn();
@@ -24,10 +24,10 @@ if(!empty($_POST)){
         if($member){
             $_SESSION['id'] = $member['id'];
             $_SESSION['name'] = $member['name'];
-            $_SESSION['session_id'] = session_id();
+            $_SESSION[SESSION_ID_KEY] = session_id();
         
             //cookieにセッションidをセットする
-            setcookie(COOKIE_NAME, $_SESSION['session_id'], time()+COOKIE_EXPIRY_TIME);
+            setcookie(COOKIE_NAME_KEY, $_SESSION[SESSION_ID_KEY], time()+COOKIE_EXPIRY_TIME);
         
             //ゲストアカウントでログインした場合は特殊処理を行う
             // **この位置に移動**
