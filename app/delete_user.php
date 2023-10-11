@@ -2,6 +2,7 @@
 session_start();
 require_once('header.php');
 require_once('dbconnect.php');
+require_once("utils.php");
 
 /*
 アカウント削除
@@ -11,7 +12,7 @@ $name = $_POST['name'];
 $password = sha1($_POST['password']);
 if(!empty($_POST)){
     //ゲストアカウントは削除できない
-    if($name==='ゲスト')$error['name'] = 'guest';
+    if($name===GUEST_NAME)$error['name'] = 'guest';
 
     //空欄判定
     if($_POST['name'] ==='') $error['name'] = 'blank';
@@ -19,24 +20,24 @@ if(!empty($_POST)){
 
     //存在判定
     if(empty($error)){
-        $isfind = $db->prepare('SELECT COUNT(*) AS cnt FROM members WHERE name=? and password=?');
+        $isfind = $db->prepare(SELECT_MEMBER_COUNT_BY_NAME_PASSWORD);
         $isfind->execute(array($name, $password));
         $del_user = $isfind->fetch();
         //入力情報に合致するユーザーがいれば、画像を全て消去した上でユーザー情報を削除する
         if($del_user['cnt']>0){
             //そのユーザーが登録している画像があれば全て消去する
-            $pictures = $db->prepare('SELECT id, picture FROM clothes WHERE owner=?');
+            $pictures = $db->prepare(SELECT_PICTURES_BY_OWNER);
             $pictures->execute(array($name));
             while($picture = $pictures->fetch()){
                 $pass = 'upload/';
                 $pass .= $picture['picture'];
                 unlink($pass);
             }
-            $del_pictures = $db->prepare('DELETE FROM clothes WHERE owner=?');
+            $del_pictures = $db->prepare(DELETE_CLOTHES_BY_OWNER);
             $del_pictures->execute(array($name));
 
             //ユーザー情報を削除
-            $statement = $db->prepare('DELETE FROM members WHERE name=? and password=?');
+            $statement = $db->prepare(DELETE_MEMBER_BY_NAME_PASSWORD);
             $statement->execute(array($name,$password));
             $del_msg = "消去が完了しました。";
         }else{
