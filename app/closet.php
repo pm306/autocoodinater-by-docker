@@ -4,46 +4,37 @@ require_once('logincheck.php');
 require_once('header.php');
 require_once('dbconnect.php');
 require_once('clothes_type.php');
-
+require_once('utils.php'); 
 
 $result = array();
 $name = $_SESSION['name'];
 
-/*
-「表示」ボタンが押された時の処理
-チェックボックスに１つ以上チェックが入っていた場合は一旦セッション変数を空にしてからチェック項目を記憶する
-*/
-if(!empty($_POST['type'])){
+if(!empty($_POST[POST_TYPE_KEY])){
     $_SESSION['checkbox'] = array();
-    foreach($_POST['type'] as $type):
-    $sql = $db->prepare('SELECT id, picture FROM clothes WHERE owner=? and type=?');
-    $sql->bindparam(1, $name, PDO::PARAM_STR);
-    $sql->bindparam(2, $type, PDO::PARAM_STR);    
-    $sql->execute();
-    while($tmp = $sql->fetch()){
-    $result[] = $tmp;
-    }
-    $_SESSION['checkbox'][] = $type;
+    foreach($_POST[POST_TYPE_KEY] as $type):
+        $sql = $db->prepare(SELECT_CLOTHES_BY_OWNER_AND_TYPE);
+        $sql->bindparam(1, $name, PDO::PARAM_STR);
+        $sql->bindparam(2, $type, PDO::PARAM_STR);    
+        $sql->execute();
+        while($tmp = $sql->fetch()){
+            $result[] = $tmp;
+        }
+        $_SESSION['checkbox'][] = $type;
     endforeach;
-/*
-拡大画面および削除画面から移動した場合は直前のチェック状況を保持する
-*/
-}else if($_POST['return'] == "true" && !empty($_SESSION['checkbox'])){
+} else if($_POST[POST_RETURN_KEY] == RETURN_TRUE_VALUE && !empty($_SESSION['checkbox'])){
     foreach($_SESSION['checkbox'] as $type):
-        $sql = $db->prepare('SELECT id, picture FROM clothes WHERE owner=? and type=?');
+        $sql = $db->prepare(SELECT_CLOTHES_BY_OWNER_AND_TYPE);
         $sql->bindparam(1, $name, PDO::PARAM_STR);
         $sql->bindparam(2, $type, PDO::PARAM_STR);   
         $sql->execute();
         while($tmp = $sql->fetch()){
-        $result[] = $tmp;
+            $result[] = $tmp;
         }
     endforeach;
-/*
-それ以外の場合はセッション変数を空にする
-*/
-}else{
+} else {
     $_SESSION['checkbox'] = array();
 }
+
 ?>
 
 <h1>管理ページ</h1>
