@@ -4,25 +4,26 @@ require_once('logincheck.php');
 require_once('header.php');
 require_once('dbconnect.php');
 require_once('clothes_type.php');
+require_once("utils.php");
 
 
 if(!empty($_POST)){
     //エラーチェック
     //ファイルが空
     if($_FILES['picture']['name']===''){
-        $error['file'] = "blank";
+        $error['file'] = ERROR_TEMPERATURE_BLANK;
     }
     //分類を選んでいない
-    if($_POST['type']==='tops' || $_POST['type']==='bottoms'){
-        $error['type'] = 'blank';
+    if($_POST['type']=== CLOTH_TYPE_TOPS || $_POST['type']=== CLOTH_TYPE_BOTTOMS){
+        $error['type'] = ERROR_TEMPERATURE_BLANK;
     }
     //アップロード
     if(isset($_FILES['picture']) && is_uploaded_file($_FILES['picture']['tmp_name'])){
         $old_name = $_FILES ['picture'] ['tmp_name'];
-        if (! file_exists ( 'upload' )) {
-            mkdir ( 'upload' );
+        if (! file_exists (UPLOAD_DIR)) {
+            mkdir (UPLOAD_DIR);
         }
-        $new_name = date ( "YmdHis" );
+        $new_name = date (IMAGE_NAME_FORMAT);
         $new_name .= mt_rand ();
 
         switch (exif_imagetype ( $_FILES ['picture'] ['tmp_name'] )) {
@@ -33,19 +34,19 @@ if(!empty($_POST)){
                 $new_name .= '.png';
                 break;
             default :
-                $error['imagetype'] = 'incompatible'; //jpg, pngのみ対応（暫定）
+                $error['imagetype'] = ERROR_TEMPERATURE_IMPOSSIBLE; //jpg, pngのみ対応（暫定）
                 break;
         }
 
-        if (empty($error) && move_uploaded_file ( $old_name, 'upload/' . $new_name )) {
-            $msg = '追加しました';
+        if (empty($error) && move_uploaded_file ( $old_name, UPLOAD_DIR . $new_name )) {
+            $msg = UPLOAD_SUCCESS_MESSAGE;
         } else {
-            $msg = 'アップロードに失敗しました';
+            $msg = UPLOAD_FAILURE_MESSAGE;
         }
     }
     //エラーがなければデータベースに登録する
     if(empty($error)){
-	    $statement = $db->prepare('INSERT INTO clothes SET owner=?, type=?,picture=?');
+	    $statement = $db->prepare(INSERT_NEW_CLOTH);
 	    $statement->execute(array(
             $_SESSION['name'],
 		    $_POST['type'],

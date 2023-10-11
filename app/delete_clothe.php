@@ -1,21 +1,21 @@
-<?php
+<?php 
 session_start();
 require_once('logincheck.php');
 require_once('header.php');
 require_once('dbconnect.php');
+require_once('utils.php'); 
 
-
-$id = $_POST['id'];
-$sql = $db->prepare('SELECT id, picture FROM clothes WHERE id=?');
+$id = $_POST[POST_ID_KEY];
+$sql = $db->prepare(SELECT_CLOTHES_BY_ID_PICTURE);
 $sql->bindparam(1, $id, PDO::PARAM_INT);
 $sql->execute();
 $res = $sql->fetch();
 
-$sql = $db->prepare('DELETE FROM clothes WHERE id=?');
+$sql = $db->prepare(DELETE_CLOTHES_BY_ID);
 $sql->bindparam(1, $id, PDO::PARAM_INT);
 $sql->execute();
 
-$pass = 'upload/';
+$pass = UPLOAD_DIR;
 $pass .= $res['picture'];
 unlink($pass);
 ?>
