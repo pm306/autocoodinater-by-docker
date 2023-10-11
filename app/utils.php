@@ -1,6 +1,6 @@
 <?php
 
-const COOKIE_EXPIRY_TIME = 60 * 60 * 24 * 7;  // Cookie expiration time set to 1 week in seconds
+const COOKIE_EXPIRY_TIME = 60 * 60 * 24 * 7;  
 const TIME_FOR_DELETE_COOKIE = 3600;
 const MAX_TEMPERATURE_LIMIT = 50;
 const MIN_TEMPERATURE_LIMIT = -50;
@@ -8,14 +8,15 @@ const NAME_MAX_LENGTH = 16;
 const PASSWORD_MIN_LENGTH = 4;
 const PASSWORD_MAX_LENGTH = 16;
 
+const SESSION_ID_KEY = 'session_id';
+const COOKIE_NAME_KEY = 'Cookie';   
 const POST_ID_KEY = 'id';
 const POST_TYPE_KEY = 'type';
 const POST_PICTURE_ID_KEY = 'picture_id';
 const POST_RETURN_KEY = 'return';
 const POST_KEY_WEAR = 'wear';
-const RETURN_TRUE_VALUE = 'true';
-const COOKIE_NAME = 'Cookie';           // Name of the cookie used for session identification
-const GUEST_NAME = 'ゲスト';            // Default name for guest users
+const RETURN_TRUE_VALUE = 'true';        
+const GUEST_NAME = 'ゲスト';            
 const DATE_FORMAT = 'Y-m-d';
 const IMAGE_NAME_FORMAT = "YmdHis";
 const UPLOAD_DIR = 'upload/';

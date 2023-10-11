@@ -3,20 +3,10 @@ session_start();
 require_once('header.php');
 require_once('dbconnect.php');
 require_once("utils.php");
+require_once('login_helper.php')
 
-$error = array();
-
-/*
-ログインチェック
-既にログイン済みの場合はindex.phpに飛ばす
-セッションidとcookieが同一ならログイン済みと判定
- */
-
-if (isset($_COOKIE[COOKIE_NAME]) && !empty($_SESSION) && $_SESSION['session_id'] === $_COOKIE[COOKIE_NAME]) {
-    header('Location: index.php');
-    exit();
-}
-
+// すでにログインしていればトップページにリダイレクト
+redirectIfLoggedIn();
 
 /*
 ログイン処理

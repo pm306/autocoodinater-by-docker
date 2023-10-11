@@ -6,7 +6,7 @@ require_once('dbconnect.php');
 require_once("utils.php");
 
 
-setcookie(COOKIE_NAME, "", time()-TIME_FOR_DELETE_COOKIE);
+setcookie(COOKIE_NAME_KEY, "", time()-TIME_FOR_DELETE_COOKIE);
 $_SESSION = array();
 
 session_destroy();
