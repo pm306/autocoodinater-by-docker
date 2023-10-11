@@ -9,7 +9,7 @@ require_once('login_helper.php');
 redirectIfLoggedIn();
 
 /*
-ログイン処理
+ログイン
 リクエストパラメータと同じname, passwordのアカウントがDBMSに登録されていればログイン成功
  */
 if(!empty($_POST)){
