@@ -4,11 +4,11 @@ require_once('logincheck.php');
 require_once('header.php');
 require_once('dbconnect.php');
 require_once('clothes_type.php');
+require_once('utils.php'); 
 
-
-if(isset($_POST['picture_id'])){
-    $param = $_POST['picture_id'];
-    $sql = $db->prepare('SELECT id, type, picture FROM clothes WHERE id=?');
+if(isset($_POST[POST_PICTURE_ID_KEY])){
+    $param = $_POST[POST_PICTURE_ID_KEY];
+    $sql = $db->prepare(SELECT_CLOTHES_BY_ID);
     $sql->bindparam(1, $param, PDO::PARAM_INT);
     $sql->execute();
     $res = $sql->fetch();
