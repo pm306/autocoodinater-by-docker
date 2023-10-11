@@ -40,7 +40,7 @@ if(!empty($_POST[POST_TYPE_KEY])){
 <h1>管理ページ</h1>
 <p>ここでは服の登録、検索、削除を行うことができます。<br>
 画像をクリックすると拡大できます。</p>
-<a href="register.php" class="add">●服を追加する</a><br>
+<a href="regist_clothe.php" class="add">●服を追加する</a><br>
 <a href="index.php"><img src="pictures/navigationj_back.png" width="100" height="50" style="margin-bottom: 20px;"></a>
 <div style="font-size: 125%">【検索】</div>
 <!---検索フォーム--->
