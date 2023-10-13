@@ -8,6 +8,8 @@ const NAME_MAX_LENGTH = 16;
 const PASSWORD_MIN_LENGTH = 4;
 const PASSWORD_MAX_LENGTH = 16;
 
+const COLUMN_USER_ID = 'id';
+const COLUMN_USER_NAME = 'name';
 const SESSION_ID_KEY = 'session_id';
 const COOKIE_NAME_KEY = 'Cookie';   
 const POST_ID_KEY = 'id';

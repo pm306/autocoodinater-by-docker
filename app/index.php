@@ -4,7 +4,7 @@ require_once('logincheck.php');
 require_once('header.php');
 require_once('dbconnect.php');
 require_once('clothes_type.php');
-require_once('utils.php');  // utils.php を読み込む
+require_once('utils.php');  
 
 //ゼロを空判定しない関数
 function is_empty($var = null) {

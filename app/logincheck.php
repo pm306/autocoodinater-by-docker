@@ -1,5 +1,5 @@
 <?php
-require_once('login_helper.php');
+require_once('functions.php');
 
 // ログインしていなければリダイレクト
 redirectIfNotLoggedIn();
