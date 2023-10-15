@@ -9,7 +9,7 @@ redirectIfLoggedIn();
 
 const FIELD_NAME = 'name';
 const FIELD_PASSWORD = 'password';
-$error = '';
+$error_log = '';
 
 /**
 * ログイン
@@ -19,7 +19,7 @@ if(!empty($_POST)){
     $password = $_POST[FIELD_PASSWORD] ?? '';
 
     if ($name === '' || $password === '') {
-        setError($error, '※ニックネームまたはパスワードが空です。');
+        setError($error_log, '※ニックネームまたはパスワードが空です。');
     } else {
         $user = loginUser($name, $password, $db);
 
@@ -33,20 +33,20 @@ if(!empty($_POST)){
             header('Location: index.php');
             exit();
         } else {
-            setError($error,  '※ログインに失敗しました。ニックネームかパスワードが間違っています。');
+            setError($error_log,  '※ログインに失敗しました。ニックネームかパスワードが間違っています。');
         }
     } 
 }
 ?>
 
-<h1>自動コーディネータ</h1>
+<h1>オートコーディネータ</h1>
 <p>自動で服を選んでくれるアプリケーションです。<br>
 (このページはPHPの学習を目的として製作されたものです)<br>
 <a href="explanation.php">このアプリについて</a></p><br>
 
 <form atcion="" method="post">
     <table>
-    <?php if(!empty($error))echo '<span class="alart">'.$error.'</span>';?>
+    <?php if(!empty($error_log))echo '<span class="alart">'.$error_log.'</span>';?>
     <tr>
         <td>ニックネーム</td>
         <td><input type="text" name="<?= FIELD_NAME ?>" value=""></td>

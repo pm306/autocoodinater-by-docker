@@ -2,6 +2,7 @@
 require('header.php');
 ?>
 <a href="index.php"><img src="pictures/navigationj_back.png" width="100" height="50" style="margin-bottom: -20px;"></a>
+<div>※このページは作成当初の2019年に書いたもので、見にくいですが修正していません。読む必要はないです。</div>
 <h1>これなに？</h1>
 <div>
     <p>
