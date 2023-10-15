@@ -82,3 +82,40 @@ function setLoginSessionAndCookie(array $user): void {
 
     setcookie(COOKIE_NAME_KEY, $_SESSION[SESSION_ID_KEY], time() + COOKIE_EXPIRY_TIME);
 }
+
+/**
+ * HTTP POSTメソッドで送られた服のlast_used_dateを本日に更新します。
+ */
+function updateLastUsedDate() : void {
+    foreach ($_POST[POST_CLOTHE_ID_KEY] as $clothe_id) {
+        $now_date = date(DATE_FORMAT);
+        $sql = $db->prepare('UPDATE clothes SET last_used_date=? WHERE id=?');
+        $sql->bindparam(1, $now_date, PDO::PARAM_STR);
+        $sql->bindparam(2, $clothe_id, PDO::PARAM_INT);
+        $sql->execute();
+    }
+}
+
+function checkInputErrorTemperature () : string {
+    $error_log = '';
+    $max_temperature = 0;
+    $min_temperature = 0;
+
+    if (!isEmptyExceptZero($_POST[POST_TEMPERATURE_MAX_KEY]) && !isEmptyExceptZero($_POST[POST_TEMPERATURE_MIN_KEY])) {
+        $max_temperature = $_POST[POST_TEMPERATURE_MAX_KEY];
+        $min_temperature = $_POST[POST_TEMPERATURE_MIN_KEY];
+        if ($max_temperature > MAX_TEMPERATURE_LIMIT) {
+            $error_log = ERROR_TEMPERATURE_MAXOVER;
+        } elseif ($min_temperature < MIN_TEMPERATURE_LIMIT) {
+            $error_log = ERROR_TEMPERATURE_MINOVER;
+        } elseif ($max_temperature < $min_temperature) {
+            $error_log = ERROR_TEMPERATURE_IMPOSSIBLE;
+        }
+    } elseif (!empty($_POST) && empty($_POST[POST_CLOTHE_ID_KEY])) {
+        $error_log = ERROR_TEMPERATURE_BLANK;
+    }
+
+    return $error_log;
+}
+
+

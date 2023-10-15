@@ -3,6 +3,9 @@
 気温に合わせて実際に服を選ぶスクリプト
 */
 
+$max_temperature = $_POST[POST_TEMPERATURE_MAX_KEY];
+$min_temperature = $_POST[POST_TEMPERATURE_MIN_KEY];
+
 //clothesテーブルから任意の種類の服１枚のidと画像名を取得
 function select_clothes(&$db, &$array, ...$types){
     $time = date('Y-m-d', strtotime('-1 day'));//今日、または昨日着た服を選択肢から除外

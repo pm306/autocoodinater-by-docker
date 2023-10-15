@@ -9,35 +9,15 @@ require_once('functions.php');
 
 $selectd_tops = array();
 $selected_bottoms = array();
-$max_temperature = 0;
-$min_temperature = 0;
 $name = $_SESSION[COLUMN_USER_NAME];
+$error_log = checkInputErrorTemperature();
 
 if (isDesidedClothes()) {
-    foreach ($_POST[POST_CLOTHE_ID_KEY] as $clothe_id) {
-        $now_date = date(DATE_FORMAT);
-        $sql = $db->prepare('UPDATE clothes SET last_used_date=? WHERE id=?');
-        $sql->bindparam(1, $now_date, PDO::PARAM_STR);
-        $sql->bindparam(2, $clothe_id, PDO::PARAM_INT);
-        $sql->execute();
-    }
+    updateLastUsedDate();  
 }
 
-if (!isEmptyExceptZero($_POST[POST_TEMPERATURE_MAX_KEY]) && !isEmptyExceptZero($_POST[POST_TEMPERATURE_MIN_KEY])) {
-    $max_temperature = $_POST[POST_TEMPERATURE_MAX_KEY];
-    $min_temperature = $_POST[POST_TEMPERATURE_MIN_KEY];
-    if ($max_temperature > MAX_TEMPERATURE_LIMIT) {
-        $error_log = ERROR_TEMPERATURE_MAXOVER;
-    } elseif ($min_temperature < MIN_TEMPERATURE_LIMIT) {
-        $error_log = ERROR_TEMPERATURE_MINOVER;
-    } elseif ($max_temperature < $min_temperature) {
-        $error_log = ERROR_TEMPERATURE_IMPOSSIBLE;
-    }
-    if (empty($error_log)) {
-        require_once('select_clothes.php');
-    }
-} elseif (!empty($_POST) && empty($_POST[POST_CLOTHE_ID_KEY])) {
-    $error_log = ERROR_TEMPERATURE_BLANK;
+if (empty($error_log)) {
+    require_once('select_clothes.php');
 }
 
 ?>
