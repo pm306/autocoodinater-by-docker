@@ -18,32 +18,7 @@ if (!empty($_POST) && $error_message_login === '') {
 
     header('Location: index.php');
 }
-/**
-* ログイン
-*/
-// if(!empty($_POST)){
-//     $name = $_POST[FIELD_NAME] ?? '';
-//     $password = $_POST[FIELD_PASSWORD] ?? '';
 
-//     if ($name === '' || $password === '') {
-//         setError($error_log, '※ニックネームまたはパスワードが空です。');
-//     } else {
-//         $user = loginUser($name, $password, $db);
-
-//         if ($user) {
-//             setLoginSessionAndCookie($user);
-
-//             if ($_SESSION[COLUMN_USER_NAME] === GUEST_NAME) {
-//                 require_once('guestlogin.php');
-//             }
-
-//             header('Location: index.php');
-//             exit();
-//         } else {
-//             setError($error_log,  '※ログインに失敗しました。ニックネームかパスワードが間違っています。');
-//         }
-//     } 
-// }
 ?>
 
 <h1>オートコーディネータ</h1>
