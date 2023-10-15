@@ -5,15 +5,9 @@ require_once('header.php');
 require_once('dbconnect.php');
 require_once('clothes_type.php');
 require_once('utils.php');  
+require_once('functions.php');
 
-//ゼロを空判定しない関数
-function is_empty($var = null) {
-    if (empty($var) && 0 !== $var && '0' !== $var) {
-        return true;
-    } else {
-        return false;
-    }
-}
+
 
 if (!empty($_POST[POST_KEY_WEAR])) {
     $deside = true;
@@ -31,7 +25,7 @@ $selected_bottoms = array();
 $max_temperature = $min_temperature = 0;
 $name = $_SESSION['name'];
 
-if (!is_empty($_POST['max_temperature']) && !is_empty($_POST['min_temperature'])) {
+if (!isEmptyExceptZero($_POST['max_temperature']) && !isEmptyExceptZero($_POST['min_temperature'])) {
     $max_temperature = $_POST['max_temperature'];
     $min_temperature = $_POST['min_temperature'];
     if ($max_temperature > MAX_TEMPERATURE_LIMIT) {

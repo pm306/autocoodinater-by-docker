@@ -26,6 +26,16 @@ function redirectIfLoggedIn() {
 }
 
 /**
+ * 0および'0'を除く変数が空であるかをチェックします。
+ *
+ * @param mixed $var チェック対象の変数（デフォルトはnull）
+ * @return bool 変数が空の場合はtrue、空でない場合はfalse
+ */
+function isEmptyExceptZero($var = null) {
+    return empty($var) && $var !== 0 && $var !== '0';
+}
+
+/**
  * ユーザーをデータベースで検索し、ログイン情報を検証する。
  *
  * @param string $name ユーザー名
