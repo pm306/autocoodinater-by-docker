@@ -42,15 +42,15 @@ function isDesidedClothes() : bool {
 }
 
 /**
- * ユーザーをデータベースで検索し、ログイン情報を検証する。
+ * ログインネームとパスワードからユーザーを取得する。
  *
  * @param string $name ユーザー名
  * @param string $password 生のパスワード
- * @param PDO $db データベースの接続
  * 
  * @return array|false 該当するユーザー情報またはfalse
  */
-function loginUser(string $name, string $password, PDO $db): ?array {
+function getUserData(string $name, string $password): ?array {
+    global $db;
 
     $stmt = $db->prepare('SELECT * FROM members WHERE name=?');
     $stmt->execute(array($name));
@@ -75,9 +75,15 @@ function setError(string &$alart, string $message): void {
 /** 
  * ログインセッションを確立します。
 */
-function setLoginSessionAndCookie(array $user): void {
-    $_SESSION[COLUMN_USER_ID] = $user[COLUMN_USER_ID];
-    $_SESSION[COLUMN_USER_NAME] = $user[COLUMN_USER_NAME];
+function setLoginSessionAndCookie(): void {
+    global $db;
+
+    $login_name = $_POST[POST_LOGIN_NAME_KEY] ?? '';
+    $login_password = $_POST[POST_LOGIN_PASSWORD_KEY] ?? '';
+    $userData = getUserData($login_name, $login_password);
+
+    $_SESSION[COLUMN_USER_ID] = $userData[COLUMN_USER_ID];
+    $_SESSION[COLUMN_USER_NAME] = $userData[COLUMN_USER_NAME];
     $_SESSION[SESSION_ID_KEY] = session_id();
 
     setcookie(COOKIE_NAME_KEY, $_SESSION[SESSION_ID_KEY], time() + COOKIE_EXPIRY_TIME);
@@ -87,6 +93,8 @@ function setLoginSessionAndCookie(array $user): void {
  * HTTP POSTメソッドで送られた服のlast_used_dateを本日に更新します。
  */
 function updateLastUsedDate() : void {
+    global $db;
+
     foreach ($_POST[POST_CLOTHE_ID_KEY] as $clothe_id) {
         $now_date = date(DATE_FORMAT);
         $sql = $db->prepare('UPDATE clothes SET last_used_date=? WHERE id=?');
@@ -96,6 +104,35 @@ function updateLastUsedDate() : void {
     }
 }
 
+
+/**
+ * ログインユーザーの名前とパスワードの入力に応じてエラーメッセージを返します。
+ * 
+ * @return $error_message エラーメッセージ。エラーがない場合は空文字列を返す。
+ */
+function checkInputErrorLoginUserAndPass() : string {
+    $error_message = '';
+    $login_name = $_POST[POST_LOGIN_NAME_KEY] ?? '';
+    $login_password = $_POST[POST_LOGIN_PASSWORD_KEY] ?? '';
+
+    if ($login_name === '' || $login_password === '') {
+        $error_message = '※ニックネームまたはパスワードが空です。';
+    }
+    else {
+        $userData = getUserData($login_name, $login_password);
+        if ($userData === null) {
+            $error_message = '※ログインに失敗しました。ニックネームかパスワードが間違っています。';
+        }
+    }
+    
+    return $error_message;
+}
+
+/**
+ * 最高気温、最低気温の入力に応じてエラーメッセージを返します。
+ * 
+ * @return $error_log エラーメッセージ。エラーがない場合は空文字列を返す
+ */
 function checkInputErrorTemperature () : string {
     $error_log = '';
     $max_temperature = 0;

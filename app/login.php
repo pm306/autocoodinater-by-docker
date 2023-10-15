@@ -7,36 +7,43 @@ require_once('functions.php');
 
 redirectIfLoggedIn();
 
-const FIELD_NAME = 'name';
-const FIELD_PASSWORD = 'password';
-$error_log = '';
+$error_message_login = $_POST ? checkInputErrorLoginUserAndPass() : '';
 
+if (!empty($_POST) && $error_message_login === '') {
+    setLoginSessionAndCookie();
+
+    if ($_SESSION[COLUMN_USER_NAME] === GUEST_NAME) {
+        require_once('guestlogin.php');
+    }
+
+    header('Location: index.php');
+}
 /**
 * ログイン
 */
-if(!empty($_POST)){
-    $name = $_POST[FIELD_NAME] ?? '';
-    $password = $_POST[FIELD_PASSWORD] ?? '';
+// if(!empty($_POST)){
+//     $name = $_POST[FIELD_NAME] ?? '';
+//     $password = $_POST[FIELD_PASSWORD] ?? '';
 
-    if ($name === '' || $password === '') {
-        setError($error_log, '※ニックネームまたはパスワードが空です。');
-    } else {
-        $user = loginUser($name, $password, $db);
+//     if ($name === '' || $password === '') {
+//         setError($error_log, '※ニックネームまたはパスワードが空です。');
+//     } else {
+//         $user = loginUser($name, $password, $db);
 
-        if ($user) {
-            setLoginSessionAndCookie($user);
+//         if ($user) {
+//             setLoginSessionAndCookie($user);
 
-            if ($_SESSION[COLUMN_USER_NAME] === GUEST_NAME) {
-                require_once('guestlogin.php');
-            }
+//             if ($_SESSION[COLUMN_USER_NAME] === GUEST_NAME) {
+//                 require_once('guestlogin.php');
+//             }
 
-            header('Location: index.php');
-            exit();
-        } else {
-            setError($error_log,  '※ログインに失敗しました。ニックネームかパスワードが間違っています。');
-        }
-    } 
-}
+//             header('Location: index.php');
+//             exit();
+//         } else {
+//             setError($error_log,  '※ログインに失敗しました。ニックネームかパスワードが間違っています。');
+//         }
+//     } 
+// }
 ?>
 
 <h1>オートコーディネータ</h1>
@@ -46,14 +53,14 @@ if(!empty($_POST)){
 
 <form atcion="" method="post">
     <table>
-    <?php if(!empty($error_log))echo '<span class="alart">'.$error_log.'</span>';?>
+    <?php if(!empty($error_message_login))echo '<span class="alart">'.$error_message_login.'</span>';?>
     <tr>
         <td>ニックネーム</td>
-        <td><input type="text" name="<?= FIELD_NAME ?>" value=""></td>
+        <td><input type="text" name="<?= POST_LOGIN_NAME_KEY ?>" value=""></td>
     </tr>
     <tr>
         <td>パスワード</td>
-        <td><input type="password" name="<?= FIELD_PASSWORD ?>"></td>
+        <td><input type="password" name="<?= POST_LOGIN_PASSWORD_KEY ?>"></td>
     </tr>
     <tr>
         <td><input type="submit" value="ログイン"></td>

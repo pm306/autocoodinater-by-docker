@@ -7,7 +7,7 @@ require_once('clothes_type.php');
 require_once('utils.php');  
 require_once('functions.php');
 
-$selectd_tops = array();
+$selected_tops = array();
 $selected_bottoms = array();
 $name = $_SESSION[COLUMN_USER_NAME];
 $error_log = checkInputErrorTemperature();
