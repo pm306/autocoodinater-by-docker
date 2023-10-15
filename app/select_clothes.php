@@ -14,7 +14,7 @@ function select_clothes(&$db, &$array, ...$types){
     }
 
     //sql文の作成
-    $sql = 'SELECT id, type, picture FROM clothes WHERE owner=? and used_date<"';
+    $sql = 'SELECT id, type, picture FROM clothes WHERE owner=? and last_used_date<"';
     $sql .= $time.'" and (';
     for($i=0; $i<$len; $i++){
         $sql .= 'type="'.$types[$i].'" ';

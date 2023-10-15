@@ -13,7 +13,7 @@ if (!empty($_POST[POST_KEY_WEAR])) {
     $deside = true;
     foreach ($_POST[POST_KEY_WEAR] as $id) {
         $date = date(DATE_FORMAT);
-        $sql = $db->prepare('UPDATE clothes SET used_date=? WHERE id=?');
+        $sql = $db->prepare('UPDATE clothes SET last_used_date=? WHERE id=?');
         $sql->bindparam(1, $date, PDO::PARAM_STR);
         $sql->bindparam(2, $id, PDO::PARAM_INT);
         $sql->execute();

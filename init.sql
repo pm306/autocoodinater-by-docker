@@ -14,5 +14,5 @@ CREATE TABLE clothes (
     owner VARCHAR(255) NOT NULL,
     type VARCHAR(255) NOT NULL,
     picture VARCHAR(255) NOT NULL,
-    used_date DATE
+    last_used_date DATE
 );

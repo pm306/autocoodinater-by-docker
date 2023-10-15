@@ -38,7 +38,7 @@ $sample_clothes = [
 foreach ($sample_clothes as $clothes) {
     $type = $clothes[0];
     $picture = $clothes[1];
-    $db->query("INSERT INTO clothes(owner, type, picture, used_date) VALUES('ゲスト', '$type', '$picture', '2000-01-01')");
+    $db->query("INSERT INTO clothes(owner, type, picture, last_used_date) VALUES('ゲスト', '$type', '$picture', '2000-01-01')");
 }
 
 // 画像をuploadファイルにコピー
