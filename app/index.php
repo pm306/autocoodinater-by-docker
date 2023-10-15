@@ -9,8 +9,7 @@ require_once('functions.php');
 
 
 
-if (!empty($_POST[POST_KEY_WEAR])) {
-    $deside = true;
+if (isDesidedClothes()) {
     foreach ($_POST[POST_KEY_WEAR] as $id) {
         $date = date(DATE_FORMAT);
         $sql = $db->prepare('UPDATE clothes SET last_used_date=? WHERE id=?');
@@ -49,7 +48,7 @@ if (!isEmptyExceptZero($_POST['max_temperature']) && !isEmptyExceptZero($_POST['
 <a href="logout.php" style="mergin-left: 20px;">ログアウト</a></p>
 
 <!---「決定」が押された場合はメッセージと画像を表示--->
-<?php if($deside):?>
+<?php if(isDesidedClothes()):?>
 <p id="after_msg">Have a nice day!</p>
 <img src='pictures/halloween_nekomajo.png'><br>
 <a href="index.php"><img src="pictures/navigationj_back.png" width="100" height="50"></a>
@@ -100,7 +99,7 @@ endif;?>
     <?php endforeach;
     endif;?>
     <br>
-    <?php if(!empty($_POST) && empty($error) && $deside !== true):?>
+    <?php if(!empty($_POST) && empty($error) && !isDesidedClothes()):?>
     画像をクリックすると拡大できます<br>
     <input type="image" src="pictures/pop_kettei.png" alt="決定" width="120" height="60">
     <?php endif; ?>

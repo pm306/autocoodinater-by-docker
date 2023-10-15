@@ -34,6 +34,12 @@ function redirectIfLoggedIn() {
 function isEmptyExceptZero($var = null) {
     return empty($var) && $var !== 0 && $var !== '0';
 }
+/**
+ * index.phpで「決定ボタン」が押されたか判定します
+ */
+function isDesidedClothes() : bool {
+    return !empty($_POST[POST_KEY_WEAR]);
+}
 
 /**
  * ユーザーをデータベースで検索し、ログイン情報を検証する。
