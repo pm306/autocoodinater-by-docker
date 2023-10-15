@@ -10,7 +10,7 @@ require_once('functions.php');
 
 
 if (isDesidedClothes()) {
-    foreach ($_POST[POST_KEY_WEAR] as $id) {
+    foreach ($_POST[POST_CLOTHE_ID_KEY] as $id) {
         $date = date(DATE_FORMAT);
         $sql = $db->prepare('UPDATE clothes SET last_used_date=? WHERE id=?');
         $sql->bindparam(1, $date, PDO::PARAM_STR);
@@ -37,7 +37,7 @@ if (!isEmptyExceptZero($_POST['max_temperature']) && !isEmptyExceptZero($_POST['
     if (empty($error)) {
         require_once('select_clothes.php');
     }
-} elseif (!empty($_POST) && empty($_POST[POST_KEY_WEAR])) {
+} elseif (!empty($_POST) && empty($_POST[POST_CLOTHE_ID_KEY])) {
     $error["temperature"] = ERROR_TEMPERATURE_BLANK;
 }
 
@@ -90,12 +90,12 @@ endif;?>
             //毎日洗濯しなくてもいい服は除外する
             if(array_search($top['type'], $not_laundly_everyday)!==false)continue;     
         ?>
-        <input type="hidden" name="wear[]" value="<?php echo $top['id']?>">
+        <input type="hidden" name="<?= POST_CLOTHE_ID_KEY ?>[]" value="<?php echo $top['id']?>">
     <?php endforeach;
         endif;?>
     <?php if(!empty($selected_bottoms)):   
         foreach($selected_bottoms as $bottom): ?>
-        <input type="hidden" name="wear[]" value="<?php echo $bottom['id']?>">
+        <input type="hidden" name="<?=POST_CLOTHE_ID_KEY?>[]" value="<?php echo $bottom['id']?>">
     <?php endforeach;
     endif;?>
     <br>

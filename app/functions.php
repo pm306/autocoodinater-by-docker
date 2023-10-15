@@ -38,7 +38,7 @@ function isEmptyExceptZero($var = null) {
  * index.phpで「決定ボタン」が押されたか判定します
  */
 function isDesidedClothes() : bool {
-    return !empty($_POST[POST_KEY_WEAR]);
+    return !empty($_POST[POST_CLOTHE_ID_KEY]);
 }
 
 /**
