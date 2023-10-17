@@ -41,10 +41,11 @@ const ERROR_TEMPERATURE_BLANK = '※気温を入力してください';
 const ERROR_TEMPERATURE_MAXOVER = '※正しい最高気温を入力してください(50℃まで)';
 const ERROR_TEMPERATURE_MINOVER = '※正しい最低気温を入力してください(-50℃まで)';
 const ERROR_TEMPERATURE_IMPOSSIBLE = '※最高気温が最低気温以上になるように入力してください';
-const ERROR_NAME_OVER_LENGTH = 'over';
-const ERROR_PASSWORD_SHORT = 'shortage';
-const ERROR_PASSWORD_OVER_LENGTH = 'over';
-const ERROR_NAME_ALREADY_EXISTS = 'already';
+const ERROR_USERDATA_BLANK = '※ニックネームまたはパスワードが空です';
+const ERROR_NAME_OVER_LENGTH = '※ニックネームが長すぎます。';
+const ERROR_PASSWORD_SHORT = '※パスワードが短すぎます。';
+const ERROR_PASSWORD_OVER_LENGTH = '※パスワードが長すぎます';
+const ERROR_NAME_ALREADY_EXISTS = '※登録済みのアカウント名です。';
 const UPLOAD_SUCCESS_MESSAGE = '追加しました';
 const UPLOAD_FAILURE_MESSAGE = 'アップロードに失敗しました';
 
@@ -56,6 +57,6 @@ const SELECT_MEMBER_COUNT_BY_NAME_PASSWORD = 'SELECT COUNT(*) AS cnt FROM member
 const SELECT_PICTURES_BY_OWNER = 'SELECT id, picture FROM clothes WHERE owner=?';
 const DELETE_CLOTHES_BY_OWNER = 'DELETE FROM clothes WHERE owner=?';
 const DELETE_MEMBER_BY_NAME_PASSWORD = 'DELETE FROM members WHERE name=? and password=?';
-const SELECT_MEMBER_COUNT_BY_NAME = 'SELECT COUNT(*) AS cnt FROM members WHERE name=?';
+const SELECT_MEMBER_COUNT_BY_NAME = 'SELECT COUNT(*) AS count_user FROM members WHERE name=?';
 const INSERT_NEW_MEMBER = 'INSERT INTO members SET name=?, password=?';
 const INSERT_NEW_CLOTH = 'INSERT INTO clothes SET owner=?, type=?,picture=?, last_used_date="2000-01-01"';

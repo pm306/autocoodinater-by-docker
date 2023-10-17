@@ -129,6 +129,58 @@ function checkInputErrorLoginUserAndPass() : string {
 }
 
 /**
+ * 入力されたユーザー名とパスワードのバリデーションチェックを行います。
+ * TODO:同名ユーザーのチェックも行っているが、関数名からはわかりにくい。
+ * 
+ * @return $error_message エラーメッセージ。エラーがない場合は空文字列を返す。
+ */
+function validateUserRegistration(string $username, string $password) : string {
+    $error_message = '';
+
+    if ($username === '' || $password === '') {
+        $error_message = ERROR_USERDATA_BLANK;
+    } elseif (strlen($username) > NAME_MAX_LENGTH) {
+        $error_message = ERROR_NAME_OVER_LENGTH;
+    } elseif (strlen($password) < PASSWORD_MIN_LENGTH) {
+        $error_message = ERROR_PASSWORD_SHORT;
+    } elseif (strlen($password) > PASSWORD_MAX_LENGTH) {
+        $error_message = ERROR_PASSWORD_OVER_LENGTH;
+    } else {
+        global $db;
+        $sql = $db->prepare(SELECT_MEMBER_COUNT_BY_NAME);
+        $sql->execute(array($username));
+        $result = $sql->fetch();
+        if ($result['count_user'] > 0) {
+            $error_message = ERROR_NAME_ALREADY_EXISTS;
+        }
+    }
+
+    return $error_message;
+}
+
+/**
+ * ユーザー名、パスワードを受け取り、データベースに登録します。
+ * @param string $username ユーザー名
+ * @param string $password パスワード
+ * 
+ * @return bool 登録に成功した場合はtrue、失敗した場合はfalse
+ */
+function registUser(string $username, string $password) : bool {
+    global $db;
+
+    try {
+        $hashedPassword = sha1($password);
+        $statement = $db->prepare(INSERT_NEW_MEMBER);
+        $statement->execute(array($username, $hashedPassword));
+        return true;
+    } catch (PDOException $e) {
+        error_log("Database error: " . $e->getMessage());
+        return false;
+    }
+}
+
+
+/**
  * 最高気温、最低気温の入力に応じてエラーメッセージを返します。
  * 
  * @return $error_log エラーメッセージ。エラーがない場合は空文字列を返す
