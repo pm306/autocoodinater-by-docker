@@ -1,4 +1,5 @@
 <?php
+require_once('utils.php');
 /*
 気温に合わせて実際に服を選ぶスクリプト
 */
@@ -8,7 +9,7 @@ $min_temperature = $_POST[POST_TEMPERATURE_MIN_KEY];
 
 //clothesテーブルから任意の種類の服１枚のidと画像名を取得
 function select_clothes(&$db, &$array, ...$types){
-    $time = date('Y-m-d', strtotime('-1 day'));//今日、または昨日着た服を選択肢から除外
+    $time = date(DATE_FORMAT, strtotime('-1 day'));//今日、または昨日着た服を選択肢から除外
     $len = count($types);
     if(!empty($_SESSION['name'])){
         $name = $_SESSION['name'];
@@ -25,7 +26,7 @@ function select_clothes(&$db, &$array, ...$types){
         else $sql .=')';     
     }
     $sql .= 'ORDER BY RAND() LIMIT 1';
-    // echo $sql.'<br>'; //※デバッグ用
+    //echo $sql.'<br>'; //※デバッグ用
     $result = $db->prepare($sql);
     $result->execute(array($name));
     $is_get = false;

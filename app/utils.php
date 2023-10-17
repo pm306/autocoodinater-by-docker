@@ -50,4 +50,4 @@ const DELETE_CLOTHES_BY_OWNER = 'DELETE FROM clothes WHERE owner=?';
 const DELETE_MEMBER_BY_NAME_PASSWORD = 'DELETE FROM members WHERE name=? and password=?';
 const SELECT_MEMBER_COUNT_BY_NAME = 'SELECT COUNT(*) AS cnt FROM members WHERE name=?';
 const INSERT_NEW_MEMBER = 'INSERT INTO members SET name=?, password=?';
-const INSERT_NEW_CLOTH = 'INSERT INTO clothes SET owner=?, type=?,picture=?';
+const INSERT_NEW_CLOTH = 'INSERT INTO clothes SET owner=?, type=?,picture=?, last_used_date="2000-01-01"';
