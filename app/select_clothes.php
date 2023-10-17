@@ -18,7 +18,7 @@ if($min_temperature >= BORDER_MIN_TEMPERATURE_HOT){
 }
 //まあまあ温かい時
 else if($min_temperature >= BORDER_MIN_TEMPERATURE_WARM){
-    $random_number = rand(1, 2);//１なら2枚、2なら１枚着る
+    $random_number = rand(1, 2);
     if($random_number === 1){
         if($max_temperature >= BORDER_MAX_TEMPERATURE_WARM){
         selectRandomClothe($db, $selected_tops, "t_short","other1");           
@@ -52,7 +52,7 @@ else if($min_temperature >= BORDER_MIN_TEMPERATURE_COOL){
         selectRandomClothe($db, $selected_tops, "t_short", "inner","other1");
         }
     selectRandomClothe($db, $selected_tops, "t_long", "check","other2");
-    if($max_temperature >= 19){
+    if($max_temperature >= BORDER_MAX_TEMPERATURE_COMFORTABLE){
     selectRandomClothe($db, $selected_tops, "parker","check_thick","cardigan_check","other3");        
     }else{
     selectRandomClothe($db, $selected_tops, "parker", "trainer", "check_thick", "seta", "cardigan", "cardigan_check","other3");
