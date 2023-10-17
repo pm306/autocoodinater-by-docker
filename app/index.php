@@ -16,6 +16,7 @@ if (isDesidedClothes()) {
     updateLastUsedDate();  
 }
 
+//TODO:初回ログイン時はfalseにする
 if (empty($error_log)) {
     require_once('select_clothes.php');
 }
