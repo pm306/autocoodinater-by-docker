@@ -29,6 +29,7 @@ const POST_TEMPERATURE_MIN_KEY = 'min_temperature';
 const POST_SELECT_KEY = 'select';
 const POST_LOGIN_NAME_KEY = 'name';
 const POST_LOGIN_PASSWORD_KEY = 'password';
+const POST_HIDDEN_SELECT_KEY = 'from_select';
 const RETURN_TRUE_VALUE = 'true';        
 const GUEST_NAME = 'ゲスト';            
 const DATE_FORMAT = 'Y-m-d';
