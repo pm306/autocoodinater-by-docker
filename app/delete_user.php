@@ -5,11 +5,15 @@ require_once('dbconnect.php');
 require_once("utils.php");
 require_once('functions.php');
 
+
 $error_message = '';
 $delete_message = '';
 
 if(!empty($_POST)){
-    deleteAccount($error_message, $delete_message);
+    $username = $_POST[POST_LOGIN_NAME_KEY];
+    $password = $_POST[POST_LOGIN_PASSWORD_KEY];
+    
+    deleteAccount($username, $password, $error_message, $delete_message);
 }
 ?>
 

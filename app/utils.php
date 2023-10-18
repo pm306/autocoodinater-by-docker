@@ -50,6 +50,7 @@ const ERROR_DELETE_GUEST_ACCOUNT = '※ゲストアカウントは削除でき�
 const ERROR_NAME_OR_PASSWORD_NOT_FIND = '※ニックネームまたはパスワードが間違っています。';
 const UPLOAD_SUCCESS_MESSAGE = '追加しました';
 const UPLOAD_FAILURE_MESSAGE = 'アップロードに失敗しました';
+const DELETE_USER_SUCCESS_MESSAGE = 'ユーザーの消去が完了しました。';
 
 const SELECT_CLOTHES_BY_OWNER_AND_TYPE = 'SELECT id, picture FROM clothes WHERE owner=? and type=?';
 const SELECT_CLOTHES_BY_ID = 'SELECT id, type, picture FROM clothes WHERE id=?';
