@@ -38,7 +38,7 @@ function isEmptyExceptZero($var = null) {
  * index.phpで「決定ボタン」が押されたか判定します
  */
 function isDesidedClothes() : bool {
-    return !empty($_POST[POST_CLOTHE_ID_KEY]);
+    return !empty($_POST[POST_CLOTHES_ID_KEY]);
 }
 
 /**
@@ -95,7 +95,7 @@ function setLoginSessionAndCookie(): void {
 function updateLastUsedDate() : void {
     global $db;
 
-    foreach ($_POST[POST_CLOTHE_ID_KEY] as $clothe_id) {
+    foreach ($_POST[POST_CLOTHES_ID_KEY] as $clothe_id) {
         $now_date = date(DATE_FORMAT);
         $sql = $db->prepare('UPDATE clothes SET last_used_date=? WHERE id=?');
         $sql->bindparam(1, $now_date, PDO::PARAM_STR);
@@ -227,7 +227,7 @@ function checkInputErrorTemperature () : string {
         } elseif ($max_temperature < $min_temperature) {
             $error_log = ERROR_TEMPERATURE_IMPOSSIBLE;
         }
-    } elseif (!empty($_POST) && empty($_POST[POST_CLOTHE_ID_KEY])) {
+    } elseif (!empty($_POST) && empty($_POST[POST_CLOTHES_ID_KEY])) {
         $error_log = ERROR_TEMPERATURE_BLANK;
     }
 
@@ -421,3 +421,26 @@ function displayClothesImages($clothesArray, $width=250, $height=250) {
         include 'templates/clothes_image_template.php';
     }
 }
+
+/**
+ * 選択された服の中から、毎日洗濯しない服を除外します。
+ * 残った服のIDを返します。
+ * 
+ * @param array $selected_clothes
+ * @param array $not_laundry_everyday
+ * @return array $filtered_clothes_ids 毎日洗濯しない服を除外した服のIDの配列
+ */
+function filterLaundryClothes(array &$selected_clothes, array &$not_laundry_everyday) {
+    $filtered_clothes_ids = [];
+
+    if (!empty($selected_clothes)) {
+        foreach ($selected_clothes as $clothes) {
+            if (array_search($clothes['type'], $not_laundry_everyday) === false) {
+                $filtered_clothes_ids[] = $clothes['id'];
+            }
+        }
+    }
+
+    return $filtered_clothes_ids;
+}
+

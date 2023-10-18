@@ -19,6 +19,11 @@ if (isDesidedClothes()) {
 if (empty($error_message) && isset($_POST[POST_SELECT_KEY])) {
     require_once('select_clothes.php');
 }
+
+
+
+$top_inputs = filterLaundryClothes($selected_tops, $not_laundry_everyday);
+$bottom_inputs = filterLaundryClothes($selected_bottoms, $not_laundry_everyday);
 ?>
 
 <h1>オートコーディネータ</h1>
@@ -43,25 +48,18 @@ if (empty($error_message) && isset($_POST[POST_SELECT_KEY])) {
 
 <?php if (!empty($selected_bottoms)): displayClothesImages($selected_bottoms); endif; ?>
 
-<!---決定ボタン　表示されている服のidを配列に格納して送信する--->
-<form action="" method="post"> 
-    <?php if(!empty($selected_tops)):
-        foreach($selected_tops as $top):
-            //毎日洗濯しなくてもいい服は除外する
-            if(array_search($top['type'], $not_laundly_everyday)!==false)continue;     
-        ?>
-        <input type="hidden" name="<?= POST_CLOTHE_ID_KEY ?>[]" value="<?php echo $top['id']?>">
-    <?php endforeach;
-        endif;?>
-    <?php if(!empty($selected_bottoms)):   
-        foreach($selected_bottoms as $bottom): ?>
-        <input type="hidden" name="<?=POST_CLOTHE_ID_KEY?>[]" value="<?php echo $bottom['id']?>">
-    <?php endforeach;
-    endif;?>
+<form action="" method="post">
+    <?php foreach ($top_inputs as $top_id): ?>
+        <input type="hidden" name="<?= POST_CLOTHES_ID_KEY ?>[]" value="<?= $top_id ?>">
+    <?php endforeach; ?>
+
+    <?php foreach ($bottom_inputs as $bottom_id): ?>
+        <input type="hidden" name="<?= POST_CLOTHES_ID_KEY ?>[]" value="<?= $bottom_id ?>">
+    <?php endforeach; ?>
     <br>
-    <?php if(!empty($_POST) && empty($error_message) && !isDesidedClothes()):?>
-    画像をクリックすると拡大できます<br>
-    <input type="image" src="pictures/pop_kettei.png" alt="決定" width="120" height="60">
+    <?php if (!empty($_POST) && empty($error_message) && !isDesidedClothes()): ?>
+        画像をクリックすると拡大できます<br>
+        <input type="image" src="pictures/pop_kettei.png" alt="決定" width="120" height="60">
     <?php endif; ?>
 </form>
 

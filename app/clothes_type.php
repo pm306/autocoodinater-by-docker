@@ -27,6 +27,6 @@ $clothes_type_bottoms = [
     "other_b" => "その他[ボトムス]",
 ];
 //毎日洗濯しない種類の服
-$not_laundly_everyday = [
+$not_laundry_everyday = [
     "seta", "outer_thin", "outer_thick",
 ];
