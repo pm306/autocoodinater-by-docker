@@ -242,3 +242,48 @@ function selectRandomClothe(PDO $db, array &$output_clothes, ...$clothe_types){
     }
 }
 
+/**
+ * アカウントを削除します。
+ * TODO:処理の分割 (存在判定、画像の削除、ユーザー情報の削除)
+ */
+function deleteAccount(string &$error_message, string &$del_msg) {
+    global $db;
+    $username = $_POST[POST_LOGIN_NAME_KEY];
+    $password = $_POST[POST_LOGIN_PASSWORD_KEY];
+
+    // ゲストアカウントは削除できない
+    if ($username === GUEST_NAME) {
+        $error_message = ERROR_DELETE_GUEST_ACCOUNT;
+        return;
+    }
+    // 空欄判定
+    if (empty($username) || empty($password)) {
+        $error_message = ERROR_USERDATA_BLANK;
+        return;
+    }
+
+    // 存在判定
+    $isfind = $db->prepare(SELECT_MEMBER_COUNT_BY_NAME_PASSWORD);
+    $isfind->execute(array($username, sha1($password)));
+    $del_user = $isfind->fetch();
+    // 入力情報に合致するユーザーがいれば、画像を全て消去した上でユーザー情報を削除する
+    if ($del_user === false) {
+        $error_message = ERROR_NAME_OR_PASSWORD_NOT_FIND;
+        return;
+    }
+    // そのユーザーが登録している画像があれば全て消去する
+    $pictures = $db->prepare(SELECT_PICTURES_BY_OWNER);
+    $pictures->execute(array($username));
+    while ($picture = $pictures->fetch()) {
+        $pass = UPLOAD_DIR;
+        $pass .= $picture['picture'];
+        unlink($pass);
+    }
+    $del_pictures = $db->prepare(DELETE_CLOTHES_BY_OWNER);
+    $del_pictures->execute(array($name));
+
+    // ユーザー情報を削除
+    $statement = $db->prepare(DELETE_MEMBER_BY_NAME_PASSWORD);
+    $statement->execute(array($name, $password));
+    $del_msg = "消去が完了しました。";
+}

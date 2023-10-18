@@ -46,6 +46,8 @@ const ERROR_NAME_OVER_LENGTH = '※ニックネームが長すぎます。';
 const ERROR_PASSWORD_SHORT = '※パスワードが短すぎます。';
 const ERROR_PASSWORD_OVER_LENGTH = '※パスワードが長すぎます';
 const ERROR_NAME_ALREADY_EXISTS = '※登録済みのアカウント名です。';
+const ERROR_DELETE_GUEST_ACCOUNT = '※ゲストアカウントは削除できません。';
+const ERROR_NAME_OR_PASSWORD_NOT_FIND = '※ニックネームまたはパスワードが間違っています。';
 const UPLOAD_SUCCESS_MESSAGE = '追加しました';
 const UPLOAD_FAILURE_MESSAGE = 'アップロードに失敗しました';
 
