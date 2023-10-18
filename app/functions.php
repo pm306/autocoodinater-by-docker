@@ -369,7 +369,6 @@ function displayImageForm(array &$imageData, int $imageIndex) {
     $imageSrc = "upload/{$imageData['picture']}";
 
     include 'templates/imageFormTemplate.php';
-
 }
 
 /**
@@ -407,4 +406,18 @@ function deleteClothesById($id) {
 function deleteUploadedFile($fileName) {
     $filePath = UPLOAD_DIR . $fileName;
     unlink($filePath);
+}
+
+/**
+ * index.phpで服の画像を表示します。フォームリンクはなし
+ *
+ * @param array $clothesArray 服の情報を格納した配列
+ * @param int $width 表示する画像の幅
+ * @param int $height 表示する画像の高さ
+ * @return void
+ */
+function displayClothesImages($clothesArray, $width=250, $height=250) {
+    foreach ($clothesArray as $clothes) {
+        include 'templates/clothes_image_template.php';
+    }
 }
