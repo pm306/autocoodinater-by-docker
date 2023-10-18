@@ -7,34 +7,32 @@ require_once('clothes_type.php');
 require_once('utils.php'); 
 require_once('functions.php');
 
-$result = array();
-$name = $_SESSION['name'];
+// 初期化とセッションからの情報取得
+$fetchedClothes = array();
+$userName = $_SESSION[COLUMN_USER_NAME];
+$_SESSION['checkbox'] = array();
 
-if(!empty($_POST[POST_TYPE_KEY])){
-    $_SESSION['checkbox'] = array();
-    foreach($_POST[POST_TYPE_KEY] as $type):
+if (!empty($_POST[POST_TYPE_KEY])) {
+    foreach ($_POST[POST_TYPE_KEY] as $clothesType) {
         $sql = $db->prepare(SELECT_CLOTHES_BY_OWNER_AND_TYPE);
-        $sql->bindparam(1, $name, PDO::PARAM_STR);
-        $sql->bindparam(2, $type, PDO::PARAM_STR);    
+        $sql->bindparam(1, $userName, PDO::PARAM_STR);
+        $sql->bindparam(2, $clothesType, PDO::PARAM_STR);    
         $sql->execute();
-        while($tmp = $sql->fetch()){
-            $result[] = $tmp;
+        
+        while ($clothesData = $sql->fetch()) {
+            $fetchedClothes[] = $clothesData;
         }
-        $_SESSION['checkbox'][] = $type;
-    endforeach;
-} else {
-    $_SESSION['checkbox'] = array();
+        
+        $_SESSION['checkbox'][] = $clothesType;
+    }
 }
-
 ?>
 
 <h1>管理ページ</h1>
 <p>ここでは服の登録、検索、削除を行うことができます。<br>
 画像をクリックすると拡大できます。</p>
 <a href="regist_clothe.php" class="add">●服を追加する</a><br>
-
 <a href="index.php"><img src="pictures/navigationj_back.png" width="100" height="50" style="margin-bottom: 20px;"></a>
-
 <div style="font-size: 125%">【検索】</div>
 
 <!---検索フォーム--->
@@ -55,9 +53,9 @@ if(!empty($_POST[POST_TYPE_KEY])){
 <hr>
 <!---画像を表示する--->
 <?php
-if (!empty($result)):
+if (!empty($fetchedClothes)):
     $imageIndex = 0;
-    foreach ($result as $imageData):
+    foreach ($fetchedClothes as $imageData):
         displayImageForm($imageData, $imageIndex);
         $imageIndex++;
         if ($imageIndex % IMAGES_PER_ROW == 0) {
