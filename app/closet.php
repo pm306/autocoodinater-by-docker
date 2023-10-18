@@ -5,6 +5,7 @@ require_once('header.php');
 require_once('dbconnect.php');
 require_once('clothes_type.php');
 require_once('utils.php'); 
+require_once('functions.php');
 
 $result = array();
 $name = $_SESSION['name'];
@@ -21,16 +22,16 @@ if(!empty($_POST[POST_TYPE_KEY])){
         }
         $_SESSION['checkbox'][] = $type;
     endforeach;
-} else if($_POST[POST_RETURN_KEY] == RETURN_TRUE_VALUE && !empty($_SESSION['checkbox'])){
-    foreach($_SESSION['checkbox'] as $type):
-        $sql = $db->prepare(SELECT_CLOTHES_BY_OWNER_AND_TYPE);
-        $sql->bindparam(1, $name, PDO::PARAM_STR);
-        $sql->bindparam(2, $type, PDO::PARAM_STR);   
-        $sql->execute();
-        while($tmp = $sql->fetch()){
-            $result[] = $tmp;
-        }
-    endforeach;
+// } else if($_POST[POST_RETURN_KEY] == RETURN_TRUE_VALUE && !empty($_SESSION['checkbox'])){
+//     foreach($_SESSION['checkbox'] as $type):
+//         $sql = $db->prepare(SELECT_CLOTHES_BY_OWNER_AND_TYPE);
+//         $sql->bindparam(1, $name, PDO::PARAM_STR);
+//         $sql->bindparam(2, $type, PDO::PARAM_STR);   
+//         $sql->execute();
+//         while($tmp = $sql->fetch()){
+//             $result[] = $tmp;
+//         }
+//     endforeach;
 } else {
     $_SESSION['checkbox'] = array();
 }
@@ -41,25 +42,21 @@ if(!empty($_POST[POST_TYPE_KEY])){
 <p>ここでは服の登録、検索、削除を行うことができます。<br>
 画像をクリックすると拡大できます。</p>
 <a href="regist_clothe.php" class="add">●服を追加する</a><br>
+
 <a href="index.php"><img src="pictures/navigationj_back.png" width="100" height="50" style="margin-bottom: 20px;"></a>
+
 <div style="font-size: 125%">【検索】</div>
+
 <!---検索フォーム--->
 <form id="search" name="form" action="" method="post">
-<ul>
-<?php foreach($clothes_type_tops as $key => $val):?>
-    <li><label><input type="checkbox" name="type[]" value="<?php echo $key?>"
-    <?php if(array_search($key, $_SESSION['checkbox'])!==false){echo 'checked';}?>>
-    <?php echo $val?></label></li>
-<?php endforeach;?>
-<?php foreach($clothes_type_bottoms as $key => $val):?>
-    <li><label><input type="checkbox" name="type[]" value="<?php echo $key?>"
-    <?php if(array_search($key, $_SESSION['checkbox'])!==false){echo 'checked';}?>>
-    <?php echo $val?></label></li>
-<?php endforeach;?>
-</ul>
-<input id="view" type="submit" value="表示" style="float:left;">
+    <ul>
+        <?php displayCheckboxes($clothes_type_tops, $_SESSION['checkbox']); ?>
+        <?php displayCheckboxes($clothes_type_bottoms, $_SESSION['checkbox']); ?>
+    </ul>
+    <input id="view" type="submit" value="表示" style="float:left;">
 </form>
 
+<!---一度に全チェックを入れる/外すボタン--->
 <form action="" method="post" onsubmit="return false;">
     <input class="allcheck" type="submit" value="すべて選択" onClick ="AllChecked();">
     <input class="allcheck" type="submit" value="チェックを外す" onClick="AllUnChecked();">

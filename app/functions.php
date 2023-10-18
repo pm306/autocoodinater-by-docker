@@ -337,3 +337,23 @@ function deleteAccount(string $username, string $password, string &$error_messag
         $error_message = $e->getMessage();
     }
 }
+
+/**
+ * closet.phpでチェックボックスを表示します。
+ * @param array $clothes_type_array 服の種類を格納した配列
+ * 
+ * @return void
+ */
+function displayCheckboxes(array &$clothes_type_array, array &$checked_array) {
+    foreach($clothes_type_array as $clothes_type_key => $clothes_type_name):
+        $is_checked = array_search($clothes_type_key, $checked_array) !== false ? 'checked' : '';
+        echo <<<HTML
+            <li>
+                <label>
+                    <input type="checkbox" name="type[]" value="$clothes_type_key" $is_checked>
+                    $clothes_type_name
+                </label>
+            </li>
+            HTML;
+    endforeach;
+}
