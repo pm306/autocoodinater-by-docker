@@ -55,10 +55,10 @@ const SELECT_CLOTHES_BY_OWNER_AND_TYPE = 'SELECT id, picture FROM clothes WHERE 
 const SELECT_CLOTHES_BY_ID = 'SELECT id, type, picture FROM clothes WHERE id=?';
 const SELECT_CLOTHES_BY_ID_PICTURE = 'SELECT id, picture FROM clothes WHERE id=?';
 const DELETE_CLOTHES_BY_ID = 'DELETE FROM clothes WHERE id=?';
-const SELECT_MEMBER_COUNT_BY_NAME_PASSWORD = 'SELECT COUNT(*) AS cnt FROM members WHERE name=? and password=?';
 const SELECT_PICTURES_BY_OWNER = 'SELECT id, picture FROM clothes WHERE owner=?';
 const DELETE_CLOTHES_BY_OWNER = 'DELETE FROM clothes WHERE owner=?';
 const DELETE_MEMBER_BY_NAME_PASSWORD = 'DELETE FROM members WHERE name=? and password=?';
 const SELECT_MEMBER_COUNT_BY_NAME = 'SELECT COUNT(*) AS count_user FROM members WHERE name=?';
+const SELECT_MEMBER_COUNT_BY_NAME_PASSWORD = 'SELECT COUNT(*) AS count_user FROM members WHERE name=? and password=?';
 const INSERT_NEW_MEMBER = 'INSERT INTO members SET name=?, password=?';
 const INSERT_NEW_CLOTH = 'INSERT INTO clothes SET owner=?, type=?,picture=?, last_used_date="2000-01-01"';

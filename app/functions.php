@@ -129,8 +129,35 @@ function checkInputErrorLoginUserAndPass() : string {
 }
 
 /**
- * 入力されたユーザー名とパスワードのバリデーションチェックを行います。
- * TODO:同名ユーザーのチェックも行っているが、関数名からはわかりにくい。
+ * データベースにユーザーが存在するかを確認します。
+ * ユーザー名、あるいはユーザー名とパスワードを受け取ります。
+ * @param string $username ユーザー名
+ * @param string $password パスワード
+ * 
+ * @return bool ユーザーが存在する場合はtrue、存在しない場合はfalse
+ */
+function isUserExists(string $username, string $password = null) : bool {
+    global $db;
+
+    $params = [$username];
+    $query = SELECT_MEMBER_COUNT_BY_NAME;
+
+    if ($password !== null) {
+        $query = SELECT_MEMBER_COUNT_BY_NAME_PASSWORD;
+        $params[] = sha1($password);
+    }
+
+    $sql = $db->prepare($query);
+    $sql->execute($params);
+    $result = $sql->fetch();
+
+    return $result['count_user'] > 0;
+}
+
+
+/**
+ * ユーザー登録時に入力されたユーザー名とパスワードのバリデーションチェックを行います。
+ * TODO:データベースの問い合わせを分割する
  * 
  * @return $error_message エラーメッセージ。エラーがない場合は空文字列を返す。
  */
@@ -243,8 +270,13 @@ function selectRandomClothe(PDO $db, array &$output_clothes, ...$clothe_types){
 }
 
 /**
+ * 
+ */
+
+/**
  * アカウントを削除します。
  * TODO:処理の分割 (存在判定、画像の削除、ユーザー情報の削除)
+ * TODO:削除できていない (user:テスト, pass:aaaa)
  */
 function deleteAccount(string &$error_message, string &$del_msg) {
     global $db;
@@ -263,14 +295,12 @@ function deleteAccount(string &$error_message, string &$del_msg) {
     }
 
     // 存在判定
-    $isfind = $db->prepare(SELECT_MEMBER_COUNT_BY_NAME_PASSWORD);
-    $isfind->execute(array($username, sha1($password)));
-    $del_user = $isfind->fetch();
-    // 入力情報に合致するユーザーがいれば、画像を全て消去した上でユーザー情報を削除する
-    if ($del_user === false) {
+    $is_find_user = isUserExists($username, $password);
+    if (!$is_find_user) {
         $error_message = ERROR_NAME_OR_PASSWORD_NOT_FIND;
         return;
     }
+
     // そのユーザーが登録している画像があれば全て消去する
     $pictures = $db->prepare(SELECT_PICTURES_BY_OWNER);
     $pictures->execute(array($username));
@@ -280,10 +310,10 @@ function deleteAccount(string &$error_message, string &$del_msg) {
         unlink($pass);
     }
     $del_pictures = $db->prepare(DELETE_CLOTHES_BY_OWNER);
-    $del_pictures->execute(array($name));
+    $del_pictures->execute(array($username));
 
     // ユーザー情報を削除
     $statement = $db->prepare(DELETE_MEMBER_BY_NAME_PASSWORD);
-    $statement->execute(array($name, $password));
+    $statement->execute(array($username, sha1($password)));
     $del_msg = "消去が完了しました。";
 }

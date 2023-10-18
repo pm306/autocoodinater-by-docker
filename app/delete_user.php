@@ -6,14 +6,10 @@ require_once("utils.php");
 require_once('functions.php');
 
 $error_message = '';
-$del_msg = '';
+$delete_message = '';
 
-/*
-アカウント削除
-エラーチェックを行い問題なければデータベースから削除する
-*/
 if(!empty($_POST)){
-    deleteAccount($error_message, $del_msg);
+    deleteAccount($error_message, $delete_message);
 }
 ?>
 
@@ -22,8 +18,8 @@ if(!empty($_POST)){
 アカウントを削除すると登録していた服のデータもすべて消去されます。</p>
 <?php if(!empty($error_message))echo '<span class="alart">'.$error_message.'</span>';?>
 
-<?php if(!empty($del_msg)):?>
-<div style="color: red; font-size: 150%;"><?php echo $del_msg ?></div>
+<?php if(!empty($delete_message)):?>
+<div style="color: red; font-size: 150%;"><?php echo $delete_message ?></div>
 <?php else: ?>
 <form action="" method="post"><table>
 <tr><td>ニックネーム</td><td><input type="textbox" name="name"></td></tr>
