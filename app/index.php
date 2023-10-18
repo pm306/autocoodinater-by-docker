@@ -22,7 +22,7 @@ if (empty($error_message) && isset($_POST[POST_HIDDEN_SELECT_KEY]) && $_POST[POS
 
 <h1>オートコーディネータ</h1>
 <p>ようこそ、<?php echo '<span style="font-weight: bold;">'.htmlspecialchars($_SESSION[COLUMN_USER_NAME], ENT_QUOTES).'</span>';?>さん。
-<a href="logout.php" style="mergin-left: 20px;">ログアウト</a></p>
+<a href="logout.php" style="margin-left: 20px;">ログアウト</a></p>
 
 <!---「決定」が押された場合はメッセージと画像を表示--->
 <?php if(isDesidedClothes()):?>
