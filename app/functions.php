@@ -371,3 +371,18 @@ function displayImageForm(array &$imageData, int $imageIndex) {
     include 'templates/imageFormTemplate.php';
 
 }
+
+/**
+ * 服のIDから服の情報を取得します。
+ * @param string $pictureIdKey 服のID
+ * 
+ * @return array 服の情報を格納した配列
+ */
+function fetchClotheDetails(string $pictureIdKey) {
+    global $db;
+
+    $sql = $db->prepare(SELECT_CLOTHES_BY_ID);
+    $sql->bindparam(1, $pictureIdKey, PDO::PARAM_INT);
+    $sql->execute();
+    return $sql->fetch();
+}
