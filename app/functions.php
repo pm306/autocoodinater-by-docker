@@ -357,3 +357,17 @@ function displayCheckboxes(array &$clothes_type_array, array &$checked_array) {
             HTML;
     endforeach;
 }
+
+/**
+ * closet.phpで画像を表示します。
+ * @param array $imageData 画像の情報を格納した配列
+ * @param int $imageIndex 画像のインデックス
+ */
+function displayImageForm(array &$imageData, int $imageIndex) {
+    $formName = "detail{$imageIndex}";
+    $pictureId = $imageData['id'];
+    $imageSrc = "upload/{$imageData['picture']}";
+
+    include 'templates/imageFormTemplate.php';
+
+}
