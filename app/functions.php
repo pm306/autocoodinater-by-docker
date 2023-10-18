@@ -269,51 +269,64 @@ function selectRandomClothe(PDO $db, array &$output_clothes, ...$clothe_types){
     }
 }
 
-/**
- * 
- */
 
-/**
- * アカウントを削除します。
- * TODO:処理の分割 (存在判定、画像の削除、ユーザー情報の削除)
- * TODO:削除できていない (user:テスト, pass:aaaa)
- */
-function deleteAccount(string &$error_message, string &$del_msg) {
-    global $db;
-    $username = $_POST[POST_LOGIN_NAME_KEY];
-    $password = $_POST[POST_LOGIN_PASSWORD_KEY];
-
-    // ゲストアカウントは削除できない
+// 1. 入力値のバリデーション関数
+function validateDeleteInput(string $username, string $password, string &$error_message): bool {
+    // ゲストアカウントのチェック
     if ($username === GUEST_NAME) {
         $error_message = ERROR_DELETE_GUEST_ACCOUNT;
-        return;
+        return false;
     }
+    
     // 空欄判定
     if (empty($username) || empty($password)) {
         $error_message = ERROR_USERDATA_BLANK;
-        return;
+        return false;
     }
 
     // 存在判定
-    $is_find_user = isUserExists($username, $password);
-    if (!$is_find_user) {
+    if (!isUserExists($username, $password)) {
         $error_message = ERROR_NAME_OR_PASSWORD_NOT_FIND;
-        return;
+        return false;
     }
 
-    // そのユーザーが登録している画像があれば全て消去する
+    return true;
+}
+
+// 2. 関連する画像の削除関数
+function deleteAssociatedPictures(string $username) {
+    global $db;
+    
     $pictures = $db->prepare(SELECT_PICTURES_BY_OWNER);
     $pictures->execute(array($username));
     while ($picture = $pictures->fetch()) {
-        $pass = UPLOAD_DIR;
-        $pass .= $picture['picture'];
-        unlink($pass);
+        $path = UPLOAD_DIR . $picture['picture'];
+        unlink($path);
     }
+
     $del_pictures = $db->prepare(DELETE_CLOTHES_BY_OWNER);
     $del_pictures->execute(array($username));
+}
 
-    // ユーザー情報を削除
+// 3. ユーザー情報の削除関数
+function deleteUser(string $username, string $password) {
+    global $db;
+    
     $statement = $db->prepare(DELETE_MEMBER_BY_NAME_PASSWORD);
     $statement->execute(array($username, sha1($password)));
-    $del_msg = "消去が完了しました。";
+}
+
+// 全体の関数
+function deleteAccount(string &$error_message, string &$delete_message) {
+    $username = $_POST[POST_LOGIN_NAME_KEY];
+    $password = $_POST[POST_LOGIN_PASSWORD_KEY];
+
+    if (!validateDeleteInput($username, $password, $error_message)) {
+        return;
+    }
+
+    deleteAssociatedPictures($username);
+    deleteUser($username, $password);
+
+    $delete_message = "消去が完了しました。";
 }
