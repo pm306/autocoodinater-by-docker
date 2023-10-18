@@ -58,23 +58,10 @@ if(!empty($_POST[POST_TYPE_KEY])){
 
 <!---一度に全チェックを入れる/外すボタン--->
 <form action="" method="post" onsubmit="return false;">
-    <input class="allcheck" type="submit" value="すべて選択" onClick ="AllChecked();">
-    <input class="allcheck" type="submit" value="チェックを外す" onClick="AllUnChecked();">
+    <button class="allcheck" type="button" onClick="setAllCheckboxes(true);" >すべて選択</button>
+    <button class="allcheck" type="button" onClick="setAllCheckboxes(false);">チェックを外す</button>
 </form>
 
-<!---一度に全チェックを入れる/外す関数--->
-<script language="JavaScript" type="text/javascript">
-function AllChecked(){
-  for (var i=0; i<document.form.elements['type[]'].length; i++){
-    document.form.elements['type[]'][i].checked = true;
-  }
-}
-function AllUnChecked(){
-  for (var i=0; i<document.form.elements['type[]'].length; i++){
-    document.form.elements['type[]'][i].checked = false;
-  }
-}
-</script>
 <hr>
 <!---画像を表示する--->
 <?php

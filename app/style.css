@@ -83,12 +83,13 @@ img#detail{
 	max-width: 400px;
 	max-height: 400px;
 }
-input.allcheck{
+button.allcheck{
 	padding: 3px 10px;
 	font-size: 0.8em;
 	margin-left: 30px;
 	margin-top: 3px;
 }
+
 input.regist{
 	padding: 3px 10px;
 	font-size: 1.0em;
