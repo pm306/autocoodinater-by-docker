@@ -18,7 +18,7 @@ $escaped_clothe_picture = htmlspecialchars($clotheDetails['picture'], ENT_QUOTES
 
 ?>
 <p>種別：<?php echo $clothetype; ?>
-<form method="post" name="deleteForm" action="delete_clothe.php">
+<form method="post" name="deleteForm" action="delete_clothes.php">
     <input type="hidden" name="id" value="<?php echo $escaped_clothe_id ?>">
     <a href="javascript:deleteForm.submit()">データの削除(クリックすると消去されます)</a>
 </form>

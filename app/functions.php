@@ -386,3 +386,25 @@ function fetchClotheDetails(string $pictureIdKey) {
     $sql->execute();
     return $sql->fetch();
 }
+
+function getClothesDetailsById($id) {
+    global $db;
+
+    $sql = $db->prepare(SELECT_CLOTHES_BY_ID_PICTURE);
+    $sql->bindparam(1, $id, PDO::PARAM_INT);
+    $sql->execute();
+    return $sql->fetch();
+}
+
+function deleteClothesById($id) {
+    global $db;
+
+    $sql = $db->prepare(DELETE_CLOTHES_BY_ID);
+    $sql->bindparam(1, $id, PDO::PARAM_INT);
+    $sql->execute();
+}
+
+function deleteUploadedFile($fileName) {
+    $filePath = UPLOAD_DIR . $fileName;
+    unlink($filePath);
+}
