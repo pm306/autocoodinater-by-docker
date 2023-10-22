@@ -3,7 +3,7 @@ session_start();
 require_once('header.php');
 require_once('dbconnect.php');
 require_once("utils.php");
-require_once('functions.php');
+require_once('lib/functions.php');
 
 redirectIfLoggedIn();
 
@@ -26,9 +26,9 @@ if (!empty($_POST) && $error_message_login === '') {
 (このページはPHPの学習を目的として製作されたものです)<br>
 <a href="explanation.php">このアプリについて</a></p><br>
 
-<form atcion="" method="post">
+<form action="" method="post">
     <table>
-    <?php if(!empty($error_message_login))echo '<span class="alart">'.$error_message_login.'</span>';?>
+    <?php if(!empty($error_message_login))echo '<span class="alert">'.$error_message_login.'</span>';?>
     <tr>
         <td>ニックネーム</td>
         <td><input type="text" name="<?= POST_LOGIN_NAME_KEY ?>" value=""></td>

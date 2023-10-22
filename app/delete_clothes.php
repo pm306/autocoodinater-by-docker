@@ -4,7 +4,7 @@ require_once('logincheck.php');
 require_once('header.php');
 require_once('dbconnect.php');
 require_once('utils.php'); 
-require_once('functions.php');
+require_once('lib/functions.php');
 
 $clothes_id = $_POST[POST_ID_KEY];
 $clothes_details = getClothesDetailsById($clothes_id);

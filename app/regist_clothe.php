@@ -1,4 +1,5 @@
 <?php 
+global $db, $clothes_type_tops, $clothes_type_bottoms;
 session_start();
 require_once('logincheck.php');
 require_once('header.php');
@@ -49,8 +50,8 @@ if(!empty($_POST)){
 	    $statement = $db->prepare(INSERT_NEW_CLOTH);
 	    $statement->execute(array(
             $_SESSION['name'],
-		    $_POST['type'],
-		    $new_name,
+            $_POST['type'],
+            $new_name ?? '',
         ));
     }
 }
@@ -58,6 +59,7 @@ if(!empty($_POST)){
 <?php if($msg === "追加しました"):?>
 <br><div id="complete"><?php echo $msg?></div><br>
 <?php else:?>
+<?=$msg?>
 <h1>服の登録</h1>
 <p>画像と種類を選んで「追加」ボタンを押してください。<br>
 <?php endif; ?>
@@ -66,11 +68,11 @@ if(!empty($_POST)){
 <form action="" method="post" class="regist" enctype="multipart/form-data">
 	<dl>
 		<dt>【画像】※jpg、jpeg、pngのみ対応</dt>
-        <?php if($error['file']==='blank'):?>
-                <div class="alart">※ファイルが選択されていません</div>
+        <?php if(($error['file'] ?? '')==='blank'):?>
+                <div class="alert">※ファイルが選択されていません</div>
               <?php endif; ?>
         <?php if($error['imagetype'] === 'incompatible'):?>
-            <div class="alart">※画像の形式が間違っています</div>
+            <div class="alert">※画像の形式が間違っています</div>
         <?php endif; ?>
 		<dd>
             <input type="file" name="picture" accept="image/*" size="35" onchange="previewImage(this);"/>
@@ -78,8 +80,8 @@ if(!empty($_POST)){
         </dd>
         <br>
         <dt>【分類】</dt>
-        <?php if($error['type']==='blank'):?>
-                <div class="alart">※服のタイプを選んでください</div>
+        <?php if(($error['type'] ?? '')==='blank'):?>
+                <div class="alert">※服のタイプを選んでください</div>
              <?php endif; ?>
         <dd>
             <select name="type">
@@ -109,7 +111,7 @@ if(!empty($_POST)){
 <script>
 function previewImage(obj)
 {
-	var fileReader = new FileReader();
+	let fileReader = new FileReader();
 	fileReader.onload = (function() {
 		document.getElementById('preview').src = fileReader.result;
 	});

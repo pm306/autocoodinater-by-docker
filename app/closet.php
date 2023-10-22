@@ -1,11 +1,12 @@
 <?php 
+global $db, $clothes_type_tops, $clothes_type_bottoms;
 session_start();
 require_once('logincheck.php');
 require_once('header.php');
 require_once('dbconnect.php');
 require_once('clothes_type.php');
 require_once('utils.php'); 
-require_once('functions.php');
+require_once('lib/functions.php');
 
 // 初期化とセッションからの情報取得
 $fetchedClothes = array();
@@ -15,8 +16,8 @@ $_SESSION['checkbox'] = array();
 if (!empty($_POST[POST_TYPE_KEY])) {
     foreach ($_POST[POST_TYPE_KEY] as $clothesType) {
         $sql = $db->prepare(SELECT_CLOTHES_BY_OWNER_AND_TYPE);
-        $sql->bindparam(1, $userName, PDO::PARAM_STR);
-        $sql->bindparam(2, $clothesType, PDO::PARAM_STR);    
+        $sql->bindparam(1, $userName);
+        $sql->bindparam(2, $clothesType);    
         $sql->execute();
         
         while ($clothesData = $sql->fetch()) {

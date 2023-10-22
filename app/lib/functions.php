@@ -1,13 +1,13 @@
 <?php
-require_once('utils.php'); 
+require_once __DIR__.'/../utils.php';
 
 /**
  * ログイン判定を行う。
  */
 function isLoggedIn(): bool {
     return 
-    isset($_COOKIE[COOKIE_NAME_KEY]) && 
-    isset($_SESSION[SESSION_ID_KEY]) && 
+    isset($_COOKIE[COOKIE_NAME_KEY]) &&
+    isset($_SESSION[SESSION_ID_KEY]) &&
     $_SESSION[SESSION_ID_KEY] === $_COOKIE[COOKIE_NAME_KEY];
 }
 
@@ -31,56 +31,39 @@ function redirectIfLoggedIn() {
  * @param mixed $var チェック対象の変数（デフォルトはnull）
  * @return bool 変数が空の場合はtrue、空でない場合はfalse
  */
-function isEmptyExceptZero($var = null) {
+function isEmptyExceptZero($var = null): bool {
     return empty($var) && $var !== 0 && $var !== '0';
 }
 /**
  * index.phpで「決定ボタン」が押されたか判定します
  */
-function isDesidedClothes() : bool {
+function isDecidedClothes() : bool {
     return !empty($_POST[POST_CLOTHES_ID_KEY]);
 }
 
 /**
- * ログインネームとパスワードからユーザーを取得する。
+ * ログインネームからユーザーを取得する。
  *
  * @param string $name ユーザー名
- * @param string $password 生のパスワード
- * 
  * @return array|false 該当するユーザー情報またはfalse
  */
-function getUserData(string $name, string $password): ?array {
+function getUserData(string $name): ?array {
     global $db;
 
     $stmt = $db->prepare('SELECT * FROM members WHERE name=?');
     $stmt->execute(array($name));
-    
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    return $user ? $user : null;
-}
 
-/**
-* エラーメッセージを設定します。
-*
-* @param string $error エラーメッセージを格納する変数
-* @param string $message エラーメッセージ
-* 
-* @return void
-*/
-function setError(string &$alart, string $message): void {
-    $alart = $message;
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $user ?: null;
 }
 
 /** 
  * ログインセッションを確立します。
 */
 function setLoginSessionAndCookie(): void {
-    global $db;
-
     $login_name = $_POST[POST_LOGIN_NAME_KEY] ?? '';
-    $login_password = $_POST[POST_LOGIN_PASSWORD_KEY] ?? '';
-    $userData = getUserData($login_name, $login_password);
+    $userData = getUserData($login_name);
 
     $_SESSION[COLUMN_USER_ID] = $userData[COLUMN_USER_ID];
     $_SESSION[COLUMN_USER_NAME] = $userData[COLUMN_USER_NAME];
@@ -98,7 +81,7 @@ function updateLastUsedDate() : void {
     foreach ($_POST[POST_CLOTHES_ID_KEY] as $clothe_id) {
         $now_date = date(DATE_FORMAT);
         $sql = $db->prepare('UPDATE clothes SET last_used_date=? WHERE id=?');
-        $sql->bindparam(1, $now_date, PDO::PARAM_STR);
+        $sql->bindparam(1, $now_date);
         $sql->bindparam(2, $clothe_id, PDO::PARAM_INT);
         $sql->execute();
     }
@@ -108,7 +91,7 @@ function updateLastUsedDate() : void {
 /**
  * ログインユーザーの名前とパスワードの入力に応じてエラーメッセージを返します。
  * 
- * @return $error_message エラーメッセージ。エラーがない場合は空文字列を返す。
+ * @return string $error_message エラーメッセージ。エラーがない場合は空文字列を返す。
  */
 function checkInputErrorLoginUserAndPass() : string {
     $error_message = '';
@@ -119,12 +102,12 @@ function checkInputErrorLoginUserAndPass() : string {
         $error_message = '※ニックネームまたはパスワードが空です。';
     }
     else {
-        $userData = getUserData($login_name, $login_password);
+        $userData = getUserData($login_name);
         if ($userData === null) {
             $error_message = '※ログインに失敗しました。ニックネームかパスワードが間違っています。';
         }
     }
-    
+
     return $error_message;
 }
 
@@ -132,11 +115,11 @@ function checkInputErrorLoginUserAndPass() : string {
  * データベースにユーザーが存在するかを確認します。
  * ユーザー名、あるいはユーザー名とパスワードを受け取ります。
  * @param string $username ユーザー名
- * @param string $password パスワード
- * 
+ * @param ?string $password パスワード
+ *
  * @return bool ユーザーが存在する場合はtrue、存在しない場合はfalse
  */
-function isUserExists(string $username, string $password = null) : bool {
+function isUserExists(string $username, ?string $password = null) : bool {
     global $db;
 
     $params = [$username];
@@ -159,37 +142,38 @@ function isUserExists(string $username, string $password = null) : bool {
  * ユーザー登録時に入力されたユーザー名とパスワードのバリデーションチェックを行います。
  * TODO:データベースの問い合わせを分割する
  * 
- * @return $error_message エラーメッセージ。エラーがない場合は空文字列を返す。
+ * @param string $username ユーザー名
+ * @param string $pssword パスワード
+ * @return string エラーメッセージ。エラーがない場合は空文字列を返す。
  */
 function validateUserRegistration(string $username, string $password) : string {
-    $error_message = '';
 
     if ($username === '' || $password === '') {
-        $error_message = ERROR_USERDATA_BLANK;
+        return ERROR_USERDATA_BLANK;
     } elseif (strlen($username) > NAME_MAX_LENGTH) {
-        $error_message = ERROR_NAME_OVER_LENGTH;
+        return ERROR_NAME_OVER_LENGTH;
     } elseif (strlen($password) < PASSWORD_MIN_LENGTH) {
-        $error_message = ERROR_PASSWORD_SHORT;
+        return ERROR_PASSWORD_SHORT;
     } elseif (strlen($password) > PASSWORD_MAX_LENGTH) {
-        $error_message = ERROR_PASSWORD_OVER_LENGTH;
+        return ERROR_PASSWORD_OVER_LENGTH;
     } else {
         global $db;
         $sql = $db->prepare(SELECT_MEMBER_COUNT_BY_NAME);
         $sql->execute(array($username));
         $result = $sql->fetch();
         if ($result['count_user'] > 0) {
-            $error_message = ERROR_NAME_ALREADY_EXISTS;
+            return ERROR_NAME_ALREADY_EXISTS;
+        } else {
+            return '';
         }
     }
-
-    return $error_message;
 }
 
 /**
  * ユーザー名、パスワードを受け取り、データベースに登録します。
  * @param string $username ユーザー名
  * @param string $password パスワード
- * 
+ *
  * @return bool 登録に成功した場合はtrue、失敗した場合はfalse
  */
 function registUser(string $username, string $password) : bool {
@@ -209,59 +193,57 @@ function registUser(string $username, string $password) : bool {
 
 /**
  * 最高気温、最低気温の入力に応じてエラーメッセージを返します。
- * 
- * @return $error_log エラーメッセージ。エラーがない場合は空文字列を返す
+ *
+ * @return string エラーメッセージ。エラーがない場合は空文字列を返す
  */
 function checkInputErrorTemperature () : string {
-    $error_log = '';
-    $max_temperature = 0;
-    $min_temperature = 0;
 
     if (!isEmptyExceptZero($_POST[POST_TEMPERATURE_MAX_KEY]) && !isEmptyExceptZero($_POST[POST_TEMPERATURE_MIN_KEY])) {
         $max_temperature = $_POST[POST_TEMPERATURE_MAX_KEY];
         $min_temperature = $_POST[POST_TEMPERATURE_MIN_KEY];
         if ($max_temperature > MAX_TEMPERATURE_LIMIT) {
-            $error_log = ERROR_TEMPERATURE_MAXOVER;
+            return ERROR_TEMPERATURE_MAXOVER;
         } elseif ($min_temperature < MIN_TEMPERATURE_LIMIT) {
-            $error_log = ERROR_TEMPERATURE_MINOVER;
+            return ERROR_TEMPERATURE_MINOVER;
         } elseif ($max_temperature < $min_temperature) {
-            $error_log = ERROR_TEMPERATURE_IMPOSSIBLE;
+            return ERROR_TEMPERATURE_IMPOSSIBLE;
         }
     } elseif (!empty($_POST) && empty($_POST[POST_CLOTHES_ID_KEY])) {
-        $error_log = ERROR_TEMPERATURE_BLANK;
+        return ERROR_TEMPERATURE_BLANK;
     }
 
-    return $error_log;
+    return '';
 }
 
 /**
  * 指定された服の種類の中からランダムに服を1着選び、配列に格納します。
  * @param PDO $db データベース接続オブジェクト
- * @param array $output_clothes 服の情報を格納する配列
+ * @param ?array $output_clothes 服の情報を格納する配列
  * @param string $clothe_types 服の種類
- * 
+ *
  * @return void
  */
-function selectRandomClothe(PDO $db, array &$output_clothes, ...$clothe_types){
+function selectRandomClothe(PDO $db, ?array &$output_clothes, ...$clothe_types){
+    $output_clothes = (array) $output_clothes;
     $yesterday_date = date(DATE_FORMAT, strtotime('-1 day'));
     $clothe_types_length = count($clothe_types);
     $username = $_SESSION[POST_LOGIN_NAME_KEY];
-    
+
     // WHERE句の条件を配列で生成
     $type_conditions = array_fill(0, $clothe_types_length, 'type=?');
-    
+
     // SQL文の動的部分を組み立て
     $sql = sprintf(
         "SELECT id, type, picture FROM clothes WHERE owner=? and last_used_date<'%s' and (%s) ORDER BY RAND() LIMIT 1",
         $yesterday_date,
         implode(' or ', $type_conditions)
     );
-    
+
     $selected_clothe_stmt = $db->prepare($sql);
     $selected_clothe_stmt->execute(array_merge([$username], $clothe_types));
-    
+
     $selected_clothe = $selected_clothe_stmt->fetch();
-    
+
     if ($selected_clothe) {
         $output_clothes[] = $selected_clothe;
     } else {
@@ -276,7 +258,7 @@ function validateDeleteInput(string $username, string $password, string &$error_
         $error_message = ERROR_DELETE_GUEST_ACCOUNT;
         return false;
     }
-    
+
     if (empty($username) || empty($password)) {
         $error_message = ERROR_USERDATA_BLANK;
         return false;
@@ -291,6 +273,9 @@ function validateDeleteInput(string $username, string $password, string &$error_
 }
 
 // 2. 関連する画像の削除関数
+/**
+ * @throws Exception
+ */
 function deleteAssociatedPictures(string $username) {
     global $db;
 
@@ -311,6 +296,9 @@ function deleteAssociatedPictures(string $username) {
     }
 }
 // 3. ユーザー情報の削除関数
+/**
+ * @throws Exception
+ */
 function deleteUser(string $username, string $password) {
     global $db;
 
@@ -341,12 +329,12 @@ function deleteAccount(string $username, string $password, string &$error_messag
 /**
  * closet.phpでチェックボックスを表示します。
  * @param array $clothes_type_array 服の種類を格納した配列
- * 
+ *
  * @return void
  */
-function displayCheckboxes(array &$clothes_type_array, array &$checked_array) {
+function displayCheckboxes(array $clothes_type_array, array $checked_array) {
     foreach($clothes_type_array as $clothes_type_key => $clothes_type_name):
-        $is_checked = array_search($clothes_type_key, $checked_array) !== false ? 'checked' : '';
+        $is_checked = in_array($clothes_type_key, $checked_array) ? 'checked' : '';
         echo <<<HTML
             <li>
                 <label>
@@ -363,8 +351,8 @@ function displayCheckboxes(array &$clothes_type_array, array &$checked_array) {
  * @param array $imageData 画像の情報を格納した配列
  * @param int $imageIndex 画像のインデックス
  */
-function displayImageForm(array &$imageData, int $imageIndex) {
-    $formName = "detail{$imageIndex}";
+function displayImageForm(array $imageData, int $imageIndex) {
+    $formName = "detail$imageIndex";
     $pictureId = $imageData['id'];
     $imageSrc = "upload/{$imageData['picture']}";
 
@@ -430,12 +418,12 @@ function displayClothesImages($clothesArray, $width=250, $height=250) {
  * @param array $not_laundry_everyday
  * @return array $filtered_clothes_ids 毎日洗濯しない服を除外した服のIDの配列
  */
-function filterLaundryClothes(array &$selected_clothes, array &$not_laundry_everyday) {
+function filterLaundryClothes(array $selected_clothes, array $not_laundry_everyday) {
     $filtered_clothes_ids = [];
 
     if (!empty($selected_clothes)) {
         foreach ($selected_clothes as $clothes) {
-            if (array_search($clothes['type'], $not_laundry_everyday) === false) {
+            if (in_array($clothes['type'] ?? [], $not_laundry_everyday)) {
                 $filtered_clothes_ids[] = $clothes['id'];
             }
         }

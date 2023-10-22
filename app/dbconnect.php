@@ -13,4 +13,3 @@ try {
     echo $db_error_message;
     exit;
 }
-?>

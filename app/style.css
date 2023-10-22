@@ -27,7 +27,7 @@ select{
 	width: 130px;
 }
 
-.alart{
+.alert{
 	color: red;
 	font-size: 90%;
 }
@@ -97,12 +97,12 @@ input.regist{
 }
 p#after_msg{
 	font-size: 1.5em;
-	font-family: "arial black";
+	font-family: "arial black", sans-serif;
 	font-weight: bold;
 	color:rgb(19, 223, 111);
 }
 p.arial{
-	font-family: "arial";
+	font-family: "arial, sans-serif";
 }
 span.bold{
 	font-weight: bold;

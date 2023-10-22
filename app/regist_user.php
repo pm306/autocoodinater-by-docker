@@ -2,7 +2,7 @@
 session_start();
 require_once('header.php');
 require_once('dbconnect.php');
-require_once('functions.php');
+require_once('lib/functions.php');
 require_once('utils.php');
 
 $error_message = '';
@@ -22,10 +22,10 @@ if(!empty($_POST)){
 ?>
 
 <h1>アカウント作成</h1>
-<?php echo '<div class="alart">',$error_message,'</div>'; ?>
+<?php echo '<div class="alert">',$error_message,'</div>'; ?>
 
 <form action="" method="post"><table>
-<tr><td>ニックネーム(1~16文字)</td><td><input type="textbox" name='<?= POST_LOGIN_NAME_KEY ?>'></td></tr>
+<tr><td>ニックネーム(1~16文字)</td><td><input type="text" name='<?= POST_LOGIN_NAME_KEY ?>'></td></tr>
 <tr><td>パスワード(4~16文字)</td><td><input type="password" name='<?= POST_LOGIN_PASSWORD_KEY?>'></td></tr>
 <tr><td><input type="submit" value="ユーザー登録"></td></tr>
 </table><form>

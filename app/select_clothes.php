@@ -5,7 +5,7 @@
  */
 
 require_once('utils.php');
-require_once('functions.php');
+require_once('lib/functions.php');
 
 $max_temperature = $_POST[POST_TEMPERATURE_MAX_KEY];
 $min_temperature = $_POST[POST_TEMPERATURE_MIN_KEY];
@@ -27,7 +27,7 @@ else if($min_temperature >= BORDER_MIN_TEMPERATURE_WARM){
         }
         selectRandomClothe($db, $selected_tops, "t_long", "check","other2");
     }
-    if($random_number === 2 || count($selected_tops) < 2){
+    if($random_number === 2 || count($selected_tops ?? []) < 2){
         unset($selected_tops);
         selectRandomClothe($db, $selected_tops, "t_short", "poro", "t_long","other2");       
     }
@@ -88,4 +88,3 @@ else if($min_temperature >= BORDER_MIN_TEMPERATURE_COLD){
     selectRandomClothe($db, $selected_bottoms, "null");
 }
 
-?>

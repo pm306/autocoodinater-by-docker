@@ -1,4 +1,5 @@
 <?php
+global $db;
 /*
 ゲストアカウントの初期化
 */
@@ -48,4 +49,5 @@ for($i=1; $i<=$num; $i++){
     $after_pass = 'upload/sample'.$i.'.png';
     copy($before_pass, $after_pass);
 }
-?>
+
+
