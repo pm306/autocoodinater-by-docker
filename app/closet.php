@@ -40,7 +40,6 @@ if (!empty($_POST[POST_TYPE_KEY])) {
 <form id="search" name="form" action="" method="post">
     <ul>
         <?php displayCheckboxes(fetchClothesTypes(), $_SESSION['checkbox']); ?>
-        <!-- <?php displayCheckboxes($clothes_type_bottoms, $_SESSION['checkbox']); ?> -->
     </ul>
     <input id="view" type="submit" value="表示" style="float:left;">
 </form>

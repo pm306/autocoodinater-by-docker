@@ -392,6 +392,34 @@ function displayCheckboxes(array $clothes_type_array, array $checked_array) {
 }
 
 /**
+ * 服の種類のコードから服の種類の表示名を取得します。
+ *
+ * @param string $code 服の種類のコード
+ * @return string|null 服の種類の表示名。該当するデータがない場合はnullを返す
+ */
+function fetchClothesTypeNameByCode(string $code): ?string {
+    global $db;
+
+    try {
+        $query = "SELECT name FROM clothes_types WHERE code=?";
+        $statement = $db->prepare($query);
+        $statement->bindparam(1, $code);
+        $statement->execute();
+
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            return $result['name'];
+        }
+
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    }
+
+    return null; // エラーや該当するデータがない場合はnullを返す
+}
+
+
+/**
  * closet.phpで画像を表示します。
  * @param array $imageData 画像の情報を格納した配列
  * @param int $imageIndex 画像のインデックス
@@ -410,7 +438,7 @@ function displayImageForm(array $imageData, int $imageIndex) {
  * 
  * @return array 服の情報を格納した配列
  */
-function fetchClotheDetails(string $pictureIdKey) {
+function fetchClothesDetails(string $pictureIdKey) {
     global $db;
 
     $sql = $db->prepare(SELECT_CLOTHES_BY_ID);
