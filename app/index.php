@@ -1,5 +1,4 @@
 <?php
-global $not_laundry_everyday;
 session_start();
 require_once('logincheck.php');
 require_once('header.php');
@@ -16,15 +15,12 @@ if (isDecidedClothes()) {
     updateLastUsedDate();
 }
 
-
 if (empty($error_message) && isset($_POST[POST_SELECT_KEY])) {
     require_once('select_clothes.php');
 }
 
-
-
-$top_inputs    = filterLaundryClothes($selected_tops, $not_laundry_everyday);
-$bottom_inputs = filterLaundryClothes($selected_bottoms, $not_laundry_everyday);
+$top_inputs    = filterLaundryClothes($selected_tops);
+$bottom_inputs = filterLaundryClothes($selected_bottoms);
 ?>
 
 <h1>オートコーディネータ</h1>

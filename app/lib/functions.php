@@ -484,19 +484,48 @@ function displayClothesImages($clothesArray, $width=250, $height=250) {
 }
 
 /**
+ * 毎日洗濯しなくていいリストに登録されている服の種類かどうかを判定します。
+ *
+ * @param string $typeCode 服の種類のコード
+ * @return boolean 毎日洗濯しなくていい服の種類の場合はtrue、そうでない場合はfalse
+ */
+function isNotLaundryEverydayType(string $typeCode): bool {
+    global $db;
+
+    try {
+        $query = "SELECT 1 
+                  FROM not_laundry_everyday nle
+                  JOIN clothes_types ct ON nle.clothes_type_id = ct.id 
+                  WHERE ct.code = ?";
+        $statement = $db->prepare($query);
+        $statement->bindValue(1, $typeCode, PDO::PARAM_STR);
+        $statement->execute();
+
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        return $result !== false; // データが存在すればtrue、存在しなければfalseを返す
+
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+    } 
+
+    return false; // エラーが発生した場合もfalseを返す
+}
+
+
+/**
  * 選択された服の中から、毎日洗濯しない服を除外します。
  * 残った服のIDを返します。
  * 
  * @param array $selected_clothes
- * @param array $not_laundry_everyday
+ * @param array $not_laundry_everyday 毎日洗濯しない服のコードと表示名の配列
  * @return array $filtered_clothes_ids 毎日洗濯しない服を除外した服のIDの配列
  */
-function filterLaundryClothes(array $selected_clothes, array $not_laundry_everyday) {
+function filterLaundryClothes(array $selected_clothes) {
     $filtered_clothes_ids = [];
 
     if (!empty($selected_clothes)) {
         foreach ($selected_clothes as $clothes) {
-            if (in_array($clothes['type'] ?? [], $not_laundry_everyday)) {
+            if (!isNotLaundryEverydayType($clothes['type'] ?? '')) {
                 $filtered_clothes_ids[] = $clothes['id'];
             }
         }
