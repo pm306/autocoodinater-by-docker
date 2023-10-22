@@ -30,7 +30,7 @@ if (!empty($_POST) && $error_message_login === '') {
     <table>
     <?php if(!empty($error_message_login))echo '<span class="alert">'.$error_message_login.'</span>';?>
     <tr>
-        <td>ニックネーム</td>
+        <td>メールアドレス</td>
         <td><input type="text" name="<?= POST_LOGIN_NAME_KEY ?>" value=""></td>
     </tr>
     <tr>
@@ -46,8 +46,8 @@ if (!empty($_POST) && $error_message_login === '') {
 <br><a href="regist_user.php" style="font-weight: bold;">アカウント作成</a><br><br>
 <a href="delete_user.php">アカウントの削除</a>
 <hr>
-<br>※以下のニックネームでゲストアカウントによるお試しログインができます。<br>
-ニックネーム：ゲスト<br>
+<br>※以下のメールアドレスでゲストアカウントによるお試しログインができます。<br>
+メールアドレス：guest<br>
 パスワード：任意<br><br>
 ゲストアカウントには最初からいくつかの服が登録されているため、手軽にアプリの動作を確認することができます。<br>
 服の追加・削除も可能ですが、ブラウザを閉じたりログアウトすると状態がリセットされます。<br>

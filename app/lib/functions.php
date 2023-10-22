@@ -89,26 +89,26 @@ function updateLastUsedDate() : void {
 
 
 /**
- * ログインユーザーの名前とパスワードの入力に応じてエラーメッセージを返します。
+ * ログインユーザーのメールアドレスとパスワードの入力に応じてエラーメッセージを返します。
  * 
  * @return string $error_message エラーメッセージ。エラーがない場合は空文字列を返す。
  */
 function checkInputErrorLoginUserAndPass() : string {
-    $error_message = '';
+
     $login_name = $_POST[POST_LOGIN_NAME_KEY] ?? '';
     $login_password = $_POST[POST_LOGIN_PASSWORD_KEY] ?? '';
 
     if ($login_name === '' || $login_password === '') {
-        $error_message = '※ニックネームまたはパスワードが空です。';
+        return ERROR_USERDATA_BLANK;
     }
     else {
         $userData = getUserData($login_name);
         if ($userData === null) {
-            $error_message = '※ログインに失敗しました。ニックネームかパスワードが間違っています。';
+            return ERROR_FAILURE_LOGIN;
         }
     }
 
-    return $error_message;
+    return '';
 }
 
 /**
