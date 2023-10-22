@@ -135,29 +135,29 @@ function isUserExists(string $username, ?string $password = null) : bool {
 
 
 /**
- * ユーザー登録時に入力されたユーザー名とパスワードのバリデーションチェックを行います。
+ * ユーザー登録時に入力されるユーザー情報のバリデーションを行います。
+ * ユーザー名、メールアドレス、パスワードです。
  * TODO:データベースの問い合わせを分割する
  * 
  * @param string $username ユーザー名
  * @param string $pssword パスワード
  * @return string エラーメッセージ。エラーがない場合は空文字列を返す。
  */
-function validateUserRegistration(string $username, string $password) : string {
+function validateUserRegistration(string $username, string $email_address, string $password) : string {
 
     if ($username === '' || $password === '') {
         return ERROR_USERDATA_BLANK;
     } elseif (strlen($username) > NAME_MAX_LENGTH) {
         return ERROR_NAME_OVER_LENGTH;
+    } elseif (strlen($email_address) > EMAIL_MAX_LENGTH){
+        return ERROR_EMAIL_OVER_LENGTH;
     } elseif (strlen($password) < PASSWORD_MIN_LENGTH) {
         return ERROR_PASSWORD_SHORT;
     } elseif (strlen($password) > PASSWORD_MAX_LENGTH) {
         return ERROR_PASSWORD_OVER_LENGTH;
     } else {
-        global $db;
-        $sql = $db->prepare(SELECT_MEMBER_COUNT_BY_NAME);
-        $sql->execute(array($username));
-        $result = $sql->fetch();
-        if ($result['count_user'] > 0) {
+        $user_data = getUserDataByMailAddress($email_address);
+        if ($user_data) {
             return ERROR_NAME_ALREADY_EXISTS;
         } else {
             return '';
@@ -166,19 +166,20 @@ function validateUserRegistration(string $username, string $password) : string {
 }
 
 /**
- * ユーザー名、パスワードを受け取り、データベースに登録します。
+ * ユーザーの情報を引数で受け取り、データベースに登録します。
  * @param string $username ユーザー名
+ * @param string $email_address メールアドレス
  * @param string $password パスワード
  *
  * @return bool 登録に成功した場合はtrue、失敗した場合はfalse
  */
-function registUser(string $username, string $password) : bool {
+function registNewUser(string $username, string $email_address, string $password) : bool {
     global $db;
 
     try {
         $hashedPassword = sha1($password);
         $statement = $db->prepare(INSERT_NEW_MEMBER);
-        $statement->execute(array($username, $hashedPassword));
+        $statement->execute(array($username, $email_address, $hashedPassword));
         return true;
     } catch (PDOException $e) {
         error_log("Database error: " . $e->getMessage());

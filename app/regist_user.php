@@ -9,11 +9,12 @@ $error_message = '';
 
 if(!empty($_POST)){
     $username = $_POST[POST_LOGIN_NAME_KEY];
+    $email_address = $_POST[POST_LOGIN_EMAIL_KEY];
     $password = $_POST[POST_LOGIN_PASSWORD_KEY];
-    $error_message = validateUserRegistration($username, $password);
+    $error_message = validateUserRegistration($username, $email_address, $password);
 
     if(empty($error_message)){
-        registUser($username, $password);
+        registNewUser($username, $email_address, $password);
 
         header('Location: regist_user_success.php');
         exit();
@@ -25,8 +26,9 @@ if(!empty($_POST)){
 <?php echo '<div class="alert">',$error_message,'</div>'; ?>
 
 <form action="" method="post"><table>
-<tr><td>ニックネーム(1~16文字)</td><td><input type="text" name='<?= POST_LOGIN_NAME_KEY ?>'></td></tr>
-<tr><td>パスワード(4~16文字)</td><td><input type="password" name='<?= POST_LOGIN_PASSWORD_KEY?>'></td></tr>
+<tr><td>ニックネーム(最大16文字)</td><td><input type="text" name='<?= POST_LOGIN_NAME_KEY ?>'></td></tr>
+<tr><td>メールアドレス(最大64文字)</td><td><input type="text" name='<?= POST_LOGIN_EMAIL_KEY ?>'></td></tr>
+<tr><td>パスワード(8~16文字)</td><td><input type="password" name='<?= POST_LOGIN_PASSWORD_KEY?>'></td></tr>
 <tr><td><input type="submit" value="ユーザー登録"></td></tr>
 </table><form>
 <hr>

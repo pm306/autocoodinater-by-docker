@@ -5,13 +5,13 @@ global $db;
 */
 
 // ユーザー名が「ゲスト」の全データおよび画像ファイルを削除
-$result = $db->query('SELECT id, picture FROM clothes WHERE owner="ゲスト"');
+$result = $db->query('SELECT id, picture FROM clothes WHERE owner="'.GUEST_EMAIL.'"');
 while($res = $result->fetch()){
     $pass = 'upload/';
     $pass .= $res['picture'];
     unlink($pass);
 }
-$db->query('DELETE FROM clothes WHERE owner="ゲスト"');
+$db->query('DELETE FROM clothes WHERE owner="'.GUEST_EMAIL.'"');
 
 // サンプルデータを新しく登録する
 $sample_clothes = [
@@ -39,7 +39,7 @@ $sample_clothes = [
 foreach ($sample_clothes as $clothes) {
     $type = $clothes[0];
     $picture = $clothes[1];
-    $db->query("INSERT INTO clothes(owner, type, picture, last_used_date) VALUES('ゲスト', '$type', '$picture', '2000-01-01')");
+    $db->query("INSERT INTO clothes(owner, type, picture, last_used_date) VALUES('".GUEST_EMAIL."', '$type', '$picture', '2000-01-01')");
 }
 
 // 画像をuploadファイルにコピー

@@ -8,19 +8,19 @@ require_once('utils.php');
 require_once('lib/functions.php');
 
 // 初期化とセッションからの情報取得
-$fetchedClothes = array();
-$userName = $_SESSION[COLUMN_USER_NAME];
+$fetched_clothes = array();
+$user_email_address = $_SESSION[COLUMN_USER_EMAIL];
 $_SESSION['checkbox'] = array();
 
 if (!empty($_POST[POST_TYPE_KEY])) {
     foreach ($_POST[POST_TYPE_KEY] as $clothesType) {
         $sql = $db->prepare(SELECT_CLOTHES_BY_OWNER_AND_TYPE);
-        $sql->bindparam(1, $userName);
+        $sql->bindparam(1, $user_email_address);
         $sql->bindparam(2, $clothesType);    
         $sql->execute();
         
         while ($clothesData = $sql->fetch()) {
-            $fetchedClothes[] = $clothesData;
+            $fetched_clothes[] = $clothesData;
         }
         
         $_SESSION['checkbox'][] = $clothesType;
@@ -52,12 +52,12 @@ if (!empty($_POST[POST_TYPE_KEY])) {
 <hr>
 <!---画像を表示する--->
 <?php
-if (!empty($fetchedClothes)):
-    $imageIndex = 0;
-    foreach ($fetchedClothes as $imageData):
-        displayImageForm($imageData, $imageIndex);
-        $imageIndex++;
-        if ($imageIndex % IMAGES_PER_ROW == 0) {
+if (!empty($fetched_clothes)):
+    $image_index = 0;
+    foreach ($fetched_clothes as $image_data):
+        displayImageForm($image_data, $image_index);
+        $image_index++;
+        if ($image_index % IMAGES_PER_ROW == 0) {
             echo '<br>';
         }
     endforeach;
