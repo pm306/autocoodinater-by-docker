@@ -32,7 +32,7 @@ $bottom_inputs = filterLaundryClothes($selected_bottoms);
     <a href="index.php"><img src="pictures/navigationj_back.png" width="100" height="50"></a>
 <?php else: ?>
     <form action="" method="post">
-        <div class='alart'><?=$error_message;?></div>
+        <div class='alert'><?=$error_message;?></div>
         最高気温：<input type="number" name='<?=POST_TEMPERATURE_MAX_KEY?>' value="<?= $_POST[POST_TEMPERATURE_MAX_KEY]?>"><br>
         最低気温：<input type="number" name='<?=POST_TEMPERATURE_MIN_KEY?>' value="<?= $_POST[POST_TEMPERATURE_MIN_KEY]?>"><br>
         <input class= "coordinate" type="submit" name='<?= POST_SELECT_KEY ?>' value=
