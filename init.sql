@@ -2,11 +2,12 @@
 CREATE TABLE members (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(16) UNIQUE NOT NULL,
-    password VARCHAR(40) NOT NULL
+    password VARCHAR(40) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL
 );
 
 -- ゲストユーザーの追加
-INSERT INTO members (name, password) VALUES ('ゲスト', SHA1('password'));
+INSERT INTO members (name, password, email) VALUES ('ゲスト', SHA1('password'), "guest");
 
 -- 服テーブルの追加
 CREATE TABLE clothes (
