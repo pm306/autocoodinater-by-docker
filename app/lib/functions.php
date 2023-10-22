@@ -327,10 +327,10 @@ function deleteAccount(string $username, string $password, string &$error_messag
 }
 
 /**
- * clothes_typesテーブルから服の種類を取得します。
+ * clothes_typesテーブルから服の種類のコードを取得します。
  * @param array $categories カテゴリの配列
  *
- * @return array $clothes_array 服の種類を格納した配列
+ * @return array $clothes_array 服の種類のコードと表示名を格納した配列
  */
 function fetchClothesTypes(array $categories = []) :array {
     global $db;
@@ -373,7 +373,7 @@ function fetchClothesTypes(array $categories = []) :array {
 
 /**
  * closet.phpでチェックボックスを表示します。
- * @param array $clothes_type_array 服の種類を格納した配列
+ * @param array $clothes_type_array 服の種類のコードと表示名を格納した連想配列
  *
  * @return void
  */

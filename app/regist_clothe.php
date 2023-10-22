@@ -1,11 +1,12 @@
 <?php 
-global $db, $clothes_type_tops, $clothes_type_bottoms;
+global $db;
 session_start();
 require_once('logincheck.php');
 require_once('header.php');
 require_once('dbconnect.php');
 require_once('clothes_type.php');
 require_once("utils.php");
+require_once('lib/functions.php');
 
 
 if(!empty($_POST)){
@@ -87,14 +88,14 @@ if(!empty($_POST)){
             <select name="type">
                 <option value="tops">----トップス----</option>
                 <?php
-                foreach($clothes_type_tops as $key => $val):
-                    echo '<option value="'.$key.'">'.$val.'</option>';
+                foreach(fetchClothesTypes(['tops']) as $code => $name):
+                    echo '<option value="'.$code.'">'.$name.'</option>';
                 endforeach;
                 ?>
                 <option value="bottoms">----ボトムス----</option>
                 <?php
-                foreach($clothes_type_bottoms as $key => $val):
-                    echo '<option value="'.$key.'">'.$val.'</option>';
+                foreach(fetchClothesTypes(['bottoms']) as $code => $name):
+                    echo '<option value="'.$code.'">'.$name.'</option>';
                 endforeach;                
                 ?>
             </select>
