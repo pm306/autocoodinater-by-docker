@@ -327,6 +327,51 @@ function deleteAccount(string $username, string $password, string &$error_messag
 }
 
 /**
+ * clothes_typesテーブルから服の種類を取得します。
+ * @param array $categories カテゴリの配列
+ *
+ * @return array $clothes_array 服の種類を格納した配列
+ */
+function fetchClothesTypes(array $categories = []) :array {
+    global $db;
+    $clothes_array = [];
+
+    try {
+        // 基本のクエリを設定
+        $query = "SELECT code, name FROM clothes_types";
+
+        // カテゴリが指定された場合、WHERE句を追加
+        if (!empty($categories)) {
+            $placeholders = implode(',', array_fill(0, count($categories), '?'));
+            $query .= " WHERE category IN ($placeholders)";
+        }
+
+        $statement = $db->prepare($query);
+
+        // カテゴリが指定された場合、bindParamを使用して各カテゴリをバインド
+        if (!empty($categories)) {
+            foreach ($categories as $index => $category) {
+                $statement->bindValue($index + 1, $category, PDO::PARAM_STR);
+            }
+        }
+
+        $statement->execute();
+
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+            $clothes_array[$row['code']] = $row['name'];
+        }
+
+    } catch (PDOException $e) {
+        // エラーメッセージを出力
+        echo $e->getMessage();
+        return [];
+    }
+
+    return $clothes_array;
+}
+
+
+/**
  * closet.phpでチェックボックスを表示します。
  * @param array $clothes_type_array 服の種類を格納した配列
  *
