@@ -13,17 +13,19 @@ $user_email_address = $_SESSION[COLUMN_USER_EMAIL];
 $_SESSION['checkbox'] = array();
 
 if (!empty($_POST[POST_TYPE_KEY])) {
-    foreach ($_POST[POST_TYPE_KEY] as $clothesType) {
-        $sql = $db->prepare(SELECT_CLOTHES_BY_OWNER_AND_TYPE);
-        $sql->bindparam(1, $user_email_address);
-        $sql->bindparam(2, $clothesType);    
-        $sql->execute();
+    foreach ($_POST[POST_TYPE_KEY] as $clothes_type) {
+        $query = 'SELECT id, picture FROM clothes WHERE owner=? and type=?';
+        // $sql = $db->prepare($query);
+        // $sql->bindparam(1, $user_email_address);
+        // $sql->bindparam(2, $clothes_type);    
+        // $sql->execute();
         
-        while ($clothesData = $sql->fetch()) {
-            $fetched_clothes[] = $clothesData;
-        }
-        
-        $_SESSION['checkbox'][] = $clothesType;
+        // while ($clothesData = $sql->fetch()) {
+        //     $fetched_clothes[] = $clothesData;
+        // }
+        $results = executeQuery($query, array($user_email_address, $clothes_type));
+        $fetched_clothes = array_merge($fetched_clothes, $results);
+        $_SESSION['checkbox'][] = $clothes_type;
     }
 }
 ?>

@@ -2,6 +2,29 @@
 require_once __DIR__.'/../utils.php';
 
 /**
+ * データベースにクエリを投げる関数です。
+ *
+ * @param string $query クエリ
+ * @param array $params クエリにバインドするパラメータ
+ * @return array|false クエリの実行結果。失敗した場合はfalse
+ */
+function executeQuery(string $query, array $params = []) {
+    global $db;
+
+    try {
+        $stmt = $db->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key + 1, $value);
+        }
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo $e->getMessage();
+        return false;
+    }
+}
+
+/**
  * ログイン判定を行う。
  */
 function isLoggedIn(): bool {
@@ -530,4 +553,5 @@ function filterLaundryClothes(array $selected_clothes) {
 
     return $filtered_clothes_ids;
 }
+
 
