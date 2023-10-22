@@ -10,7 +10,7 @@ redirectIfLoggedIn();
 $error_message_login = $_POST ? checkInputErrorLoginUserAndPass($_POST[POST_LOGIN_EMAIL_KEY], $_POST[POST_LOGIN_PASSWORD_KEY]) : '';
 
 if (!empty($_POST) && $error_message_login === '') {
-    setLoginSessionAndCookie();
+    setLoginSessionAndCookie($_POST[POST_LOGIN_EMAIL_KEY]);
 
     if ($_POST[POST_LOGIN_EMAIL_KEY] === GUEST_EMAIL) {
         require_once('guest_init.php');

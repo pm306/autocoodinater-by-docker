@@ -41,23 +41,6 @@ function isDecidedClothes() : bool {
     return !empty($_POST[POST_CLOTHES_ID_KEY]);
 }
 
-/**
- * ユーザー名からユーザー情報を取得します。
- * TODO:getUserDataByMailAddress()に置き換える
- *
- * @param string $name ユーザー名
- * @return array|false 該当するユーザー情報またはfalse
- */
-function getUserData(string $name): ?array {
-    global $db;
-
-    $stmt = $db->prepare('SELECT * FROM members WHERE name=?');
-    $stmt->execute(array($name));
-
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    return $user ?: null;
-}
 
 /**
  * メールアドレスからユーザー名を取得します。
@@ -75,13 +58,14 @@ function getUserDataByMailAddress(string $mail_address): ?array {
 
 /** 
  * ログインセッションを確立します。
+ * TODO:$_POST消す、メアドでセッション確立する
 */
-function setLoginSessionAndCookie(): void {
-    $login_name = $_POST[POST_LOGIN_NAME_KEY] ?? '';
-    $userData = getUserData($login_name);
+function setLoginSessionAndCookie($email_address): void {
+    $userData = getUserDataByMailAddress($email_address);
 
     $_SESSION[COLUMN_USER_ID] = $userData[COLUMN_USER_ID];
     $_SESSION[COLUMN_USER_NAME] = $userData[COLUMN_USER_NAME];
+    $_SESSION[COLUMN_USER_EMAIL] = $userData[COLUMN_USER_EMAIL];
     $_SESSION[SESSION_ID_KEY] = session_id();
 
     setcookie(COOKIE_NAME_KEY, $_SESSION[SESSION_ID_KEY], time() + COOKIE_EXPIRY_TIME);
