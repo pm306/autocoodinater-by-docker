@@ -7,15 +7,14 @@ require_once('lib/functions.php');
 
 redirectIfLoggedIn();
 
-$error_message_login = $_POST ? checkInputErrorLoginUserAndPass() : '';
+$error_message_login = $_POST ? checkInputErrorLoginUserAndPass($_POST[POST_LOGIN_EMAIL_KEY], $_POST[POST_LOGIN_PASSWORD_KEY]) : '';
 
 if (!empty($_POST) && $error_message_login === '') {
     setLoginSessionAndCookie();
 
-    if ($_SESSION[COLUMN_USER_NAME] === GUEST_NAME) {
+    if ($_POST[POST_LOGIN_EMAIL_KEY] === GUEST_EMAIL) {
         require_once('guestlogin.php');
     }
-
     header('Location: index.php');
 }
 
@@ -31,7 +30,7 @@ if (!empty($_POST) && $error_message_login === '') {
     <?php if(!empty($error_message_login))echo '<span class="alert">'.$error_message_login.'</span>';?>
     <tr>
         <td>メールアドレス</td>
-        <td><input type="text" name="<?= POST_LOGIN_NAME_KEY ?>" value=""></td>
+        <td><input type="text" name="<?= POST_LOGIN_EMAIL_KEY ?>" value=""></td>
     </tr>
     <tr>
         <td>パスワード</td>
@@ -47,7 +46,7 @@ if (!empty($_POST) && $error_message_login === '') {
 <a href="delete_user.php">アカウントの削除</a>
 <hr>
 <br>※以下のメールアドレスでゲストアカウントによるお試しログインができます。<br>
-メールアドレス：guest<br>
+メールアドレス：guest@com<br>
 パスワード：任意<br><br>
 ゲストアカウントには最初からいくつかの服が登録されているため、手軽にアプリの動作を確認することができます。<br>
 服の追加・削除も可能ですが、ブラウザを閉じたりログアウトすると状態がリセットされます。<br>

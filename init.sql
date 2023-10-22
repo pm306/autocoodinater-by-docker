@@ -7,7 +7,7 @@ CREATE TABLE members (
 );
 
 -- ゲストユーザーの追加
-INSERT INTO members (name, password, email) VALUES ('ゲスト', SHA1('password'), "guest");
+INSERT INTO members (name, password, email) VALUES ('ゲスト', SHA1('password'), "guest@com");
 
 -- 服テーブルの追加
 CREATE TABLE clothes (

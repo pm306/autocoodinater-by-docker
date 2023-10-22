@@ -42,7 +42,8 @@ function isDecidedClothes() : bool {
 }
 
 /**
- * ログインネームからユーザーを取得する。
+ * ユーザー名からユーザー情報を取得します。
+ * TODO:getUserDataByMailAddress()に置き換える
  *
  * @param string $name ユーザー名
  * @return array|false 該当するユーザー情報またはfalse
@@ -56,6 +57,20 @@ function getUserData(string $name): ?array {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     return $user ?: null;
+}
+
+/**
+ * メールアドレスからユーザー名を取得します。
+ */
+function getUserDataByMailAddress(string $mail_address): ?array {
+    global $db;
+
+    $statement = $db->prepare('SELECT * FROM members WHERE email=?');
+    $statement->execute(array($mail_address));
+
+    $userData = $statement->fetch(PDO::FETCH_ASSOC);
+
+    return $userData ?: null;
 }
 
 /** 
@@ -93,16 +108,13 @@ function updateLastUsedDate() : void {
  * 
  * @return string $error_message エラーメッセージ。エラーがない場合は空文字列を返す。
  */
-function checkInputErrorLoginUserAndPass() : string {
+function checkInputErrorLoginUserAndPass(string $mail_address, string $password) : string {
 
-    $login_name = $_POST[POST_LOGIN_NAME_KEY] ?? '';
-    $login_password = $_POST[POST_LOGIN_PASSWORD_KEY] ?? '';
-
-    if ($login_name === '' || $login_password === '') {
+    if ($mail_address === '' || $password === '') {
         return ERROR_USERDATA_BLANK;
     }
     else {
-        $userData = getUserData($login_name);
+        $userData = getUserDataByMailAddress($mail_address);
         if ($userData === null) {
             return ERROR_FAILURE_LOGIN;
         }
