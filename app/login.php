@@ -13,7 +13,7 @@ if (!empty($_POST) && $error_message_login === '') {
     setLoginSessionAndCookie();
 
     if ($_POST[POST_LOGIN_EMAIL_KEY] === GUEST_EMAIL) {
-        require_once('guestlogin.php');
+        require_once('guest_init.php');
     }
     header('Location: index.php');
 }
