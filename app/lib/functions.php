@@ -236,30 +236,31 @@ function checkInputErrorTemperature () : string {
 
 /**
  * 指定された服の種類の中からランダムに服を1着選び、配列に格納します。
- * @param PDO $db データベース接続オブジェクト
  * @param ?array $output_clothes 服の情報を格納する配列
  * @param string $clothe_types 服の種類
  *
  * @return void
  */
-function selectRandomClothe(PDO $db, ?array &$output_clothes, ...$clothe_types){
+function selectRandomClothe(?array &$output_clothes, ...$clothe_types){
+    global $db;
+
     $output_clothes = (array) $output_clothes;
     $yesterday_date = date(DATE_FORMAT, strtotime('-1 day'));
     $clothe_types_length = count($clothe_types);
-    $username = $_SESSION[POST_LOGIN_NAME_KEY];
+    $email_address = $_SESSION[COLUMN_USER_EMAIL];
 
     // WHERE句の条件を配列で生成
     $type_conditions = array_fill(0, $clothe_types_length, 'type=?');
 
     // SQL文の動的部分を組み立て
-    $sql = sprintf(
+    $query = sprintf(
         "SELECT id, type, picture FROM clothes WHERE owner=? and last_used_date<'%s' and (%s) ORDER BY RAND() LIMIT 1",
         $yesterday_date,
         implode(' or ', $type_conditions)
     );
 
-    $selected_clothe_stmt = $db->prepare($sql);
-    $selected_clothe_stmt->execute(array_merge([$username], $clothe_types));
+    $selected_clothe_stmt = $db->prepare($query);
+    $selected_clothe_stmt->execute(array_merge(array($email_address), $clothe_types));
 
     $selected_clothe = $selected_clothe_stmt->fetch();
 
