@@ -169,6 +169,8 @@ function validateUserRegistration(string $username, string $email_address, strin
         return ERROR_NAME_OVER_LENGTH;
     } elseif (strlen($email_address) > EMAIL_MAX_LENGTH){
         return ERROR_EMAIL_OVER_LENGTH;
+    } else if (!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+        return ERROR_EMAIL_INVALID;
     } elseif (strlen($password) < PASSWORD_MIN_LENGTH) {
         return ERROR_PASSWORD_SHORT;
     } elseif (strlen($password) > PASSWORD_MAX_LENGTH) {

@@ -55,6 +55,7 @@ const ERROR_NAME_ALREADY_EXISTS = '※登録済みのアカウントです。';
 const ERROR_DELETE_GUEST_ACCOUNT = '※ゲストアカウントは削除できません。';
 const ERROR_NAME_OR_PASSWORD_NOT_FIND = '※名前またはパスワードが間違っています。';
 const ERROR_FAILURE_LOGIN = "※ログインに失敗しました。メールアドレスかパスワードが間違っています。";
+const ERROR_EMAIL_INVALID = '※メールアドレスの形式が正しくありません。';
 const UPLOAD_SUCCESS_MESSAGE = '追加しました';
 const UPLOAD_FAILURE_MESSAGE = 'アップロードに失敗しました';
 const DELETE_USER_SUCCESS_MESSAGE = 'ユーザーの消去が完了しました。';
