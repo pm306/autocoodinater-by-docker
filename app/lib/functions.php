@@ -130,29 +130,25 @@ function checkInputErrorLoginUserAndPass(string $mail_address, string $password)
 }
 
 /**
- * データベースにユーザーが存在するかを確認します。
- * メールアドレス、あるいはユーザー名とパスワードを受け取ります。
- * @param string $username ユーザー名
- * @param ?string $password パスワード
+ * ユーザーがデータベースに登録されているかを確認します。
+ * 
+ * @param string $email_address メールアドレス（必須）
+ * @param ?string $password パスワード（省略可能）
  *
  * @return bool ユーザーが存在する場合はtrue、存在しない場合はfalse
  */
-function isUserExists(string $email_address, ?string $password = null) : bool {
-    global $db;
-
+function isUserRegistered(string $email_address, ?string $password = null) : bool {
     $params = array($email_address);
-    $query = SELECT_MEMBER_COUNT_BY_NAME;
+    $query = 'SELECT COUNT(*) AS count_user FROM members WHERE email=?';
 
     if ($password !== null) {
-        $query = SELECT_MEMBER_COUNT_BY_NAME_PASSWORD;
+        $query = 'SELECT COUNT(*) AS count_user FROM members WHERE email=? and password=?';
         $params[] = sha1($password);
     }
 
-    $sql = $db->prepare($query);
-    $sql->execute($params);
-    $result = $sql->fetch();
+    $result = executeQuery($query, $params);
 
-    return $result['count_user'] > 0;
+    return $result[0]['count_user'] > 0;
 }
 
 
@@ -272,7 +268,14 @@ function selectRandomClothe(?array &$output_clothes, ...$clothe_types){
 }
 
 
-// 1. 入力値のバリデーション関数
+/**
+ * ユーザー削除時のバリデーションチェックを行います。
+ *
+ * @param string $email_address メールアドレス
+ * @param string $password パスワード
+ * @param string $error_message エラーメッセージ
+ * @return boolean バリデーションに成功した場合はtrue、失敗した場合はfalse
+ */
 function validateDeleteInput(string $email_address, string $password, string &$error_message): bool {
     if ($email_address === GUEST_EMAIL) {
         $error_message = ERROR_DELETE_GUEST_ACCOUNT;
@@ -284,7 +287,7 @@ function validateDeleteInput(string $email_address, string $password, string &$e
         return false;
     }
 
-    if (!isUserExists($email_address, $password)) {
+    if (!isUserRegistered($email_address, $password)) {
         $error_message = ERROR_NAME_OR_PASSWORD_NOT_FIND;
         return false;
     }
@@ -292,39 +295,48 @@ function validateDeleteInput(string $email_address, string $password, string &$e
     return true;
 }
 
-// 2. 関連する画像の削除関数
+// 
 /**
+ * ユーザーに紐づく服の画像を削除します。
+ * 1. unlinkでファイルを削除
+ * 2. clothesテーブルからレコードを削除
+ * @param string $email_address メールアドレス
+ *
  * @throws Exception
  */
-function deleteAssociatedPictures(string $username) {
-    global $db;
+function deleteAssociatedPictures(string $email_address) {
 
     try {
-        $pictures = $db->prepare(SELECT_PICTURES_BY_OWNER);
-        $pictures->execute(array($username));
-        while ($picture = $pictures->fetch()) {
-            $path = UPLOAD_DIR . $picture['picture'];
+        $query = 'SELECT id, picture FROM clothes WHERE owner=?';
+        $results = executeQuery($query, array($email_address));
+
+        while ($result = array_shift($results)) {
+            $path = UPLOAD_DIR . $result['picture'];
             if (file_exists($path)) {
                 unlink($path);
             }
         }
 
-        $del_pictures = $db->prepare(DELETE_CLOTHES_BY_OWNER);
-        $del_pictures->execute(array($username));
+        $query = 'DELETE FROM clothes WHERE owner=?';
+        executeQuery($query, array($email_address));
+
     } catch (PDOException $e) {
         throw new Exception('Error deleting associated pictures: ' . $e->getMessage());
     }
 }
-// 3. ユーザー情報の削除関数
+
 /**
+ * データベースからユーザーを削除します。
+ * @param string $email_address メールアドレス
+ * @param string $password パスワード
+ *
  * @throws Exception
  */
-function deleteUser(string $username, string $password) {
-    global $db;
+function deleteRegistedUser(string $email_address, string $password) {
 
     try {
-        $statement = $db->prepare(DELETE_MEMBER_BY_NAME_PASSWORD);
-        $statement->execute(array($username, sha1($password)));
+        $query = 'DELETE FROM members WHERE email=? and password=?';
+        executeQuery($query, array($email_address, sha1($password)));
     } catch (PDOException $e) {
         throw new Exception('Error deleting user: ' . $e->getMessage());
     }
@@ -346,7 +358,7 @@ function deleteAccount(string $email_address, string $password, string &$error_m
 
     try {
         deleteAssociatedPictures($email_address);
-        deleteUser($email_address, $password);
+        deleteRegistedUser($email_address, $password);
 
         $delete_message = DELETE_USER_SUCCESS_MESSAGE;
     } catch (Exception $e) {

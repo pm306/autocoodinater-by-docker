@@ -20,6 +20,7 @@ const BORDER_MAX_TEMPERATURE_COMFORTABLE = 19;
 const COLUMN_USER_ID = 'id';
 const COLUMN_USER_NAME = 'name';
 const COLUMN_USER_EMAIL = 'email';
+const COLUMN_USER_PASSWORD = 'password';
 const SESSION_ID_KEY = 'session_id';
 const COOKIE_NAME_KEY = 'Cookie';   
 const POST_ID_KEY = 'id';
