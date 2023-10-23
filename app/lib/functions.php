@@ -23,7 +23,6 @@ function executeQuery(string $query, array $params = []) {
         return false;
     }
 }
-
 /**
  * ログイン判定を行う。
  */
@@ -132,16 +131,16 @@ function checkInputErrorLoginUserAndPass(string $mail_address, string $password)
 
 /**
  * データベースにユーザーが存在するかを確認します。
- * ユーザー名、あるいはユーザー名とパスワードを受け取ります。
+ * メールアドレス、あるいはユーザー名とパスワードを受け取ります。
  * @param string $username ユーザー名
  * @param ?string $password パスワード
  *
  * @return bool ユーザーが存在する場合はtrue、存在しない場合はfalse
  */
-function isUserExists(string $username, ?string $password = null) : bool {
+function isUserExists(string $email_address, ?string $password = null) : bool {
     global $db;
 
-    $params = [$username];
+    $params = array($email_address);
     $query = SELECT_MEMBER_COUNT_BY_NAME;
 
     if ($password !== null) {
@@ -273,18 +272,18 @@ function selectRandomClothe(PDO $db, ?array &$output_clothes, ...$clothe_types){
 
 
 // 1. 入力値のバリデーション関数
-function validateDeleteInput(string $username, string $password, string &$error_message): bool {
-    if ($username === GUEST_NAME) {
+function validateDeleteInput(string $email_address, string $password, string &$error_message): bool {
+    if ($email_address === GUEST_EMAIL) {
         $error_message = ERROR_DELETE_GUEST_ACCOUNT;
         return false;
     }
 
-    if (empty($username) || empty($password)) {
+    if (empty($email_address) || empty($password)) {
         $error_message = ERROR_USERDATA_BLANK;
         return false;
     }
 
-    if (!isUserExists($username, $password)) {
+    if (!isUserExists($email_address, $password)) {
         $error_message = ERROR_NAME_OR_PASSWORD_NOT_FIND;
         return false;
     }
@@ -330,15 +329,23 @@ function deleteUser(string $username, string $password) {
     }
 }
 
-// 全体の関数
-function deleteAccount(string $username, string $password, string &$error_message, string &$delete_message) {
-    if (!validateDeleteInput($username, $password, $error_message)) {
+/**
+ * ユーザーアカウントを削除します。
+ *
+ * @param string $email_address メールアドレス
+ * @param string $password パスワード
+ * @param string $error_message エラーメッセージ
+ * @param string $delete_message 削除完了メッセージ
+ * @return void
+ */
+function deleteAccount(string $email_address, string $password, string &$error_message, string &$delete_message) {
+    if (!validateDeleteInput($email_address, $password, $error_message)) {
         return;
     }
 
     try {
-        deleteAssociatedPictures($username);
-        deleteUser($username, $password);
+        deleteAssociatedPictures($email_address);
+        deleteUser($email_address, $password);
 
         $delete_message = DELETE_USER_SUCCESS_MESSAGE;
     } catch (Exception $e) {
@@ -540,7 +547,7 @@ function isNotLaundryEverydayType(string $typeCode): bool {
  * @param array $not_laundry_everyday 毎日洗濯しない服のコードと表示名の配列
  * @return array $filtered_clothes_ids 毎日洗濯しない服を除外した服のIDの配列
  */
-function filterLaundryClothes(array $selected_clothes) {
+function filterLaundryClothes(array $selected_clothes) :array {
     $filtered_clothes_ids = [];
 
     if (!empty($selected_clothes)) {
@@ -554,4 +561,17 @@ function filterLaundryClothes(array $selected_clothes) {
     return $filtered_clothes_ids;
 }
 
-
+/**
+ * 新しい服をデータベースに登録します。
+ * TODO:param書き込み
+ *
+ * @return bool
+ */
+function registNewClothes(string $user_email_address, string $clothes_type, string $new_name) :void {
+    $query = 'INSERT INTO clothes SET owner=?, type=?,picture=?, last_used_date="2000-01-01"';
+    executeQuery($query, array(
+        $user_email_address,
+        $clothes_type,
+        $new_name ?? '',
+    ));
+}

@@ -47,12 +47,7 @@ if(!empty($_POST)){
     }
     //エラーがなければデータベースに登録する
     if(empty($error)){
-	    $statement = $db->prepare(INSERT_NEW_CLOTH);
-	    $statement->execute(array(
-            $_SESSION['name'],
-            $_POST['type'],
-            $new_name ?? '',
-        ));
+        registNewClothes($_SESSION[COLUMN_USER_EMAIL], $_POST[POST_TYPE_KEY], $new_name ?? '');
     }
 }
 ?>
